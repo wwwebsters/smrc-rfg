@@ -18,7 +18,14 @@ export default function RunnersPage() {
   useEffect(() => {
     fetch('/api/runners')
       .then((r) => r.json())
-      .then(setRunners)
+      .then((data: Runner[]) => {
+        const sorted = data.sort((a, b) => {
+          const aLast = a.full_name.split(' ').slice(-1)[0];
+          const bLast = b.full_name.split(' ').slice(-1)[0];
+          return aLast.localeCompare(bLast);
+        });
+        setRunners(sorted);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -30,20 +37,26 @@ export default function RunnersPage() {
     <div>
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Runners</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {runners.map((runner) => (
-          <Link
-            key={runner.id}
-            href={`/runners/${runner.id}`}
-            className="bg-white rounded-xl shadow hover:shadow-md transition-shadow p-5 group"
-          >
-            <div className="text-lg font-semibold text-amber-700 group-hover:text-amber-900">
-              {runner.nickname}
-            </div>
-            {runner.age && (
-              <div className="text-sm text-gray-500 mt-1">Age: {runner.age}</div>
-            )}
-          </Link>
-        ))}
+        {runners.map((runner) => {
+          const parts = runner.full_name.split(' ');
+          const last = parts.slice(-1)[0];
+          const first = parts.slice(0, -1).join(' ');
+          const display = first ? `${last}, ${first}` : last;
+          return (
+            <Link
+              key={runner.id}
+              href={`/runners/${runner.id}`}
+              className="bg-white rounded-xl shadow hover:shadow-md transition-shadow p-5 group"
+            >
+              <div className="text-lg font-semibold text-amber-700 group-hover:text-amber-900">
+                {display} ({runner.nickname})
+              </div>
+              {runner.age && (
+                <div className="text-sm text-gray-500 mt-1">Age: {runner.age}</div>
+              )}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

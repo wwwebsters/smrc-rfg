@@ -5,6 +5,7 @@ import { useEffect, useState, FormEvent } from 'react';
 interface Runner {
   id: number;
   nickname: string;
+  full_name: string;
 }
 
 const DISTANCES = [
@@ -32,7 +33,7 @@ export default function SubmitRacePage() {
       .then((r) => r.json())
       .then((data) => {
         const sorted = data.sort((a: Runner, b: Runner) =>
-          a.nickname.localeCompare(b.nickname)
+          a.full_name.localeCompare(b.full_name)
         );
         setRunners(sorted);
       });
@@ -109,7 +110,7 @@ export default function SubmitRacePage() {
             <option value="">Select runner...</option>
             {runners.map((r) => (
               <option key={r.id} value={r.nickname}>
-                {r.nickname}
+                {r.full_name} ({r.nickname})
               </option>
             ))}
           </select>

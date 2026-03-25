@@ -32,9 +32,11 @@ export default function SubmitRacePage() {
     fetch('/api/runners')
       .then((r) => r.json())
       .then((data) => {
-        const sorted = data.sort((a: Runner, b: Runner) =>
-          a.full_name.localeCompare(b.full_name)
-        );
+        const sorted = data.sort((a: Runner, b: Runner) => {
+          const aLast = a.full_name.split(' ').slice(-1)[0];
+          const bLast = b.full_name.split(' ').slice(-1)[0];
+          return aLast.localeCompare(bLast);
+        });
         setRunners(sorted);
       });
   }, []);
@@ -108,11 +110,17 @@ export default function SubmitRacePage() {
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           >
             <option value="">Select runner...</option>
-            {runners.map((r) => (
-              <option key={r.id} value={r.nickname}>
-                {r.full_name} ({r.nickname})
-              </option>
-            ))}
+            {runners.map((r) => {
+              const parts = r.full_name.split(' ');
+              const last = parts.slice(-1)[0];
+              const first = parts.slice(0, -1).join(' ');
+              const display = first ? `${last}, ${first}` : last;
+              return (
+                <option key={r.id} value={r.nickname}>
+                  {display} ({r.nickname})
+                </option>
+              );
+            })}
           </select>
         </div>
 

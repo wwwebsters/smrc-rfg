@@ -78,7 +78,12 @@ export default function LeaderboardPage() {
                     href={`/runners/${entry.runner_id}`}
                     className="text-amber-700 hover:text-amber-900 hover:underline"
                   >
-                    {entry.nickname}
+                    {(() => {
+                      const parts = entry.full_name.split(' ');
+                      const last = parts.slice(-1)[0];
+                      const first = parts.slice(0, -1).join(' ');
+                      return first ? `${last}, ${first} (${entry.nickname})` : `${last} (${entry.nickname})`;
+                    })()}
                   </Link>
                 </td>
                 {Array.from({ length: maxRaces }, (_, i) => {

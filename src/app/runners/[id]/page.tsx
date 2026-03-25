@@ -83,7 +83,14 @@ export default function RunnerDetailPage({
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{runner.nickname}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {(() => {
+            const parts = runner.full_name.split(' ');
+            const last = parts.slice(-1)[0];
+            const first = parts.slice(0, -1).join(' ');
+            return first ? `${last}, ${first} (${runner.nickname})` : `${last} (${runner.nickname})`;
+          })()}
+        </h1>
         <div className="flex gap-4 text-gray-600 mt-1">
           {runner.age && <span>Age: {runner.age}</span>}
           {runner.birthday && <span>Born: {runner.birthday}</span>}

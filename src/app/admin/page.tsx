@@ -14,8 +14,18 @@ interface Submission {
   status: string;
 }
 
+function formatRunnerName(nickname: string, runnersMap: Record<string, string>): string {
+  const fullName = runnersMap[nickname];
+  if (!fullName) return nickname;
+  const parts = fullName.split(' ');
+  const last = parts.slice(-1)[0];
+  const first = parts.slice(0, -1).join(' ');
+  return first ? `${last}, ${first} (${nickname})` : `${last} (${nickname})`;
+}
+
 export default function AdminPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [runnersMap, setRunnersMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<number | null>(null);
   const [uploadMessage, setUploadMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -29,6 +39,13 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchSubmissions();
+    fetch('/api/runners')
+      .then((r) => r.json())
+      .then((data: { nickname: string; full_name: string }[]) => {
+        const map: Record<string, string> = {};
+        data.forEach((r) => { map[r.nickname] = r.full_name; });
+        setRunnersMap(map);
+      });
   }, [fetchSubmissions]);
 
   const handleReview = async (submissionId: number, action: 'approve' | 'reject') => {
@@ -141,7 +158,7 @@ export default function AdminPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="font-semibold text-gray-900">{sub.runner_nickname}</span>
+                      <span className="font-semibold text-gray-900">{formatRunnerName(sub.runner_nickname, runnersMap)}</span>
                       <span className="text-gray-400">|</span>
                       <span className="text-gray-700">{sub.race_name}</span>
                     </div>

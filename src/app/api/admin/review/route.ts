@@ -178,12 +178,15 @@ export async function POST(request: Request) {
           args: [finishTime, finishTime, submission.race_date, currentAge, factorAtRace, newAgTime, newTarget, runner.id, distKey],
         });
       } else {
+        // AG PR only — update the AG PR record but NOT ag_time or target
+        // Target is anchored to the best ag_time (set when the actual PR was achieved)
+        // and only changes when the runner's age changes
         statements.push({
           sql: `UPDATE runner_prs
                 SET ag_pr_time_seconds = ?, ag_pr_date = ?,
-                    age_at_ag_pr = ?, factor_at_race = ?, ag_time_seconds = ?, target_seconds = ?
+                    age_at_ag_pr = ?, factor_at_race = ?
                 WHERE runner_id = ? AND distance = ?`,
-          args: [finishTime, submission.race_date, currentAge, factorAtRace, newAgTime, newTarget, runner.id, distKey],
+          args: [finishTime, submission.race_date, currentAge, factorAtRace, runner.id, distKey],
         });
       }
     } else if (!pr) {

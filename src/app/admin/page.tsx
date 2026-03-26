@@ -14,6 +14,28 @@ interface Submission {
   status: string;
 }
 
+interface ApprovedResult {
+  id: number;
+  runner_id: number;
+  nickname: string;
+  full_name: string;
+  race_name: string;
+  race_date: string;
+  distance: string;
+  finish_time_seconds: number;
+  points_earned: number;
+  points_type: string;
+  race_number: number;
+}
+
+const DISTANCES = [
+  '5k', '4 mile', '5 mile', '10k', '8 mile', '15k',
+  '10 mile', 'Half Marathon', 'Full Marathon',
+  '50k', '50 Mile', '100 Mile',
+];
+
+const POINTS_TYPES = ['PR', 'AG_PR', 'FIRST_TIME', 'PARTICIPATION'];
+
 function formatRunnerName(nickname: string, runnersMap: Record<string, string>): string {
   const fullName = runnersMap[nickname];
   if (!fullName) return nickname;
@@ -32,6 +54,17 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<number | null>(null);
   const [uploadMessage, setUploadMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [approvedResults, setApprovedResults] = useState<ApprovedResult[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState<Partial<ApprovedResult>>({});
+  const [saving, setSaving] = useState(false);
+
+  const fetchApprovedResults = useCallback(() => {
+    fetch('/api/admin/results')
+      .then((r) => r.json())
+      .then(setApprovedResults)
+      .catch(() => {});
+  }, []);
 
   const fetchSubmissions = useCallback(() => {
     fetch('/api/submissions')
@@ -57,6 +90,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (adminAuthed !== true) return;
     fetchSubmissions();
+    fetchApprovedResults();
     fetch('/api/runners')
       .then((r) => r.json())
       .then((data: { nickname: string; full_name: string }[]) => {
@@ -77,6 +111,7 @@ export default function AdminPage() {
 
       if (res.ok) {
         fetchSubmissions();
+        fetchApprovedResults();
       } else {
         const data = await res.json();
         alert(data.error || 'Review failed');
@@ -257,6 +292,215 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </section>
+
+      {/* Approved Results */}
+      <section className="bg-white rounded-xl shadow overflow-hidden mt-6 sm:mt-8">
+        <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-4 sm:px-6 py-3 flex items-center justify-between">
+          <h2 className="text-white font-semibold text-base sm:text-lg">Approved Results</h2>
+          <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
+            {approvedResults.length} races
+          </span>
+        </div>
+
+        {approvedResults.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            No approved results yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b">
+                  <th className="px-3 py-2.5 text-left font-semibold text-gray-700">Runner</th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-gray-700">Race</th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-gray-700">Date</th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-gray-700">Distance</th>
+                  <th className="px-3 py-2.5 text-right font-semibold text-gray-700">Time</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Pts</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Type</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {approvedResults.map((result) => {
+                  const isEditing = editingId === result.id;
+
+                  if (isEditing) {
+                    const hours = Math.floor((editForm.finish_time_seconds || 0) / 3600);
+                    const mins = Math.floor(((editForm.finish_time_seconds || 0) % 3600) / 60);
+                    const secs = Math.round((editForm.finish_time_seconds || 0) % 60);
+
+                    return (
+                      <tr key={result.id} className="border-b border-gray-50 bg-yellow-50">
+                        <td className="px-3 py-2 font-medium text-gray-700">
+                          {formatRunnerName(result.nickname, runnersMap)}
+                        </td>
+                        <td className="px-3 py-2">
+                          <input
+                            type="text"
+                            value={editForm.race_name || ''}
+                            onChange={(e) => setEditForm({ ...editForm, race_name: e.target.value })}
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                          />
+                        </td>
+                        <td className="px-3 py-2">
+                          <input
+                            type="date"
+                            value={editForm.race_date || ''}
+                            onChange={(e) => setEditForm({ ...editForm, race_date: e.target.value })}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm"
+                          />
+                        </td>
+                        <td className="px-3 py-2">
+                          <select
+                            value={editForm.distance || ''}
+                            onChange={(e) => setEditForm({ ...editForm, distance: e.target.value })}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm"
+                          >
+                            {DISTANCES.map((d) => (
+                              <option key={d} value={d}>{d}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex gap-1 items-center">
+                            <input
+                              type="number" min="0" max="99"
+                              value={hours}
+                              onChange={(e) => setEditForm({ ...editForm, finish_time_seconds: Number(e.target.value) * 3600 + mins * 60 + secs })}
+                              className="w-12 border border-gray-300 rounded px-1 py-1 text-sm text-center"
+                            />
+                            <span>:</span>
+                            <input
+                              type="number" min="0" max="59"
+                              value={mins}
+                              onChange={(e) => setEditForm({ ...editForm, finish_time_seconds: hours * 3600 + Number(e.target.value) * 60 + secs })}
+                              className="w-12 border border-gray-300 rounded px-1 py-1 text-sm text-center"
+                            />
+                            <span>:</span>
+                            <input
+                              type="number" min="0" max="59"
+                              value={secs}
+                              onChange={(e) => setEditForm({ ...editForm, finish_time_seconds: hours * 3600 + mins * 60 + Number(e.target.value) })}
+                              className="w-12 border border-gray-300 rounded px-1 py-1 text-sm text-center"
+                            />
+                          </div>
+                        </td>
+                        <td className="px-3 py-2">
+                          <input
+                            type="number" min="0"
+                            value={editForm.points_earned || 0}
+                            onChange={(e) => setEditForm({ ...editForm, points_earned: Number(e.target.value) })}
+                            className="w-14 border border-gray-300 rounded px-2 py-1 text-sm text-center"
+                          />
+                        </td>
+                        <td className="px-3 py-2">
+                          <select
+                            value={editForm.points_type || ''}
+                            onChange={(e) => setEditForm({ ...editForm, points_type: e.target.value })}
+                            className="border border-gray-300 rounded px-2 py-1 text-sm"
+                          >
+                            {POINTS_TYPES.map((t) => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-3 py-2 text-center">
+                          <div className="flex gap-1 justify-center">
+                            <button
+                              disabled={saving}
+                              onClick={async () => {
+                                setSaving(true);
+                                try {
+                                  const res = await fetch('/api/admin/results', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      id: result.id,
+                                      race_name: editForm.race_name,
+                                      race_date: editForm.race_date,
+                                      distance: editForm.distance,
+                                      finish_time_seconds: editForm.finish_time_seconds,
+                                      points_earned: editForm.points_earned,
+                                      points_type: editForm.points_type,
+                                    }),
+                                  });
+                                  if (res.ok) {
+                                    setEditingId(null);
+                                    fetchApprovedResults();
+                                  } else {
+                                    const data = await res.json();
+                                    alert(data.error || 'Save failed');
+                                  }
+                                } catch {
+                                  alert('Network error');
+                                } finally {
+                                  setSaving(false);
+                                }
+                              }}
+                              className="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 disabled:opacity-50"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="px-2 py-1 bg-gray-400 text-white text-xs font-medium rounded hover:bg-gray-500"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  const typeLabel: Record<string, string> = {
+                    PR: 'PR', AG_PR: 'AG PR', FIRST_TIME: '1st Time', PARTICIPATION: 'Participation',
+                  };
+                  const typeColor: Record<string, string> = {
+                    PR: 'bg-yellow-200 text-yellow-800', AG_PR: 'bg-blue-100 text-blue-700',
+                    FIRST_TIME: 'bg-blue-100 text-blue-700', PARTICIPATION: 'bg-gray-100 text-gray-600',
+                  };
+
+                  return (
+                    <tr key={result.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                      <td className="px-3 py-2.5 font-medium">{formatRunnerName(result.nickname, runnersMap)}</td>
+                      <td className="px-3 py-2.5">{result.race_name}</td>
+                      <td className="px-3 py-2.5 text-gray-500">{result.race_date}</td>
+                      <td className="px-3 py-2.5 text-gray-500">{result.distance}</td>
+                      <td className="px-3 py-2.5 text-right font-mono">{formatTime(result.finish_time_seconds)}</td>
+                      <td className="px-3 py-2.5 text-center font-bold text-amber-700">{result.points_earned}</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${typeColor[result.points_type] || 'bg-gray-100 text-gray-600'}`}>
+                          {typeLabel[result.points_type] || result.points_type}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center">
+                        <button
+                          onClick={() => {
+                            setEditingId(result.id);
+                            setEditForm({
+                              race_name: result.race_name,
+                              race_date: result.race_date,
+                              distance: result.distance,
+                              finish_time_seconds: result.finish_time_seconds,
+                              points_earned: result.points_earned,
+                              points_type: result.points_type,
+                            });
+                          }}
+                          className="px-3 py-1 bg-amber-500 text-white text-xs font-medium rounded-lg hover:bg-amber-600 transition-colors"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </section>

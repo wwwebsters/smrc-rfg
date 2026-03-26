@@ -480,6 +480,7 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-center">
+                        <div className="flex gap-2 justify-center">
                         <button
                           onClick={() => {
                             setEditingId(result.id);
@@ -498,6 +499,7 @@ export default function AdminPage() {
                         </button>
                         <button
                           onClick={async () => {
+
                             if (!confirm(`Delete ${formatRunnerName(result.nickname, runnersMap)}'s ${result.race_name} result?`)) return;
                             try {
                               const res = await fetch('/api/admin/results', {
@@ -519,6 +521,7 @@ export default function AdminPage() {
                         >
                           Delete
                         </button>
+                        </div>
                       </td>
                     </tr>
                   );

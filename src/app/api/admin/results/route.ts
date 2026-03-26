@@ -11,7 +11,7 @@ export async function GET() {
        FROM race_results rr
        JOIN runners r ON rr.runner_id = r.id
        WHERE rr.status = 'approved'
-       ORDER BY rr.race_date DESC, rr.id DESC`
+       ORDER BY rr.race_date ASC, rr.id ASC`
     );
     return NextResponse.json(results);
   } catch (error) {

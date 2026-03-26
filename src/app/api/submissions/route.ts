@@ -1,7 +1,39 @@
 import { NextResponse } from 'next/server';
 import { dbAll, dbRun } from '@/lib/db';
+import { formatTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
+
+async function notifyDiscord(runnerNickname: string, raceName: string, raceDate: string, distance: string, finishTime: number) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const time = formatTime(finishTime);
+
+  try {
+    await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        embeds: [{
+          title: 'New Race Submission',
+          color: 0xF59E0B, // amber
+          fields: [
+            { name: 'Runner', value: runnerNickname, inline: true },
+            { name: 'Race', value: raceName, inline: true },
+            { name: 'Date', value: raceDate, inline: true },
+            { name: 'Distance', value: distance, inline: true },
+            { name: 'Finish Time', value: time, inline: true },
+          ],
+          footer: { text: 'Pending admin review' },
+          timestamp: new Date().toISOString(),
+        }],
+      }),
+    });
+  } catch (err) {
+    console.error('Discord webhook error:', err);
+  }
+}
 
 export async function GET() {
   try {
@@ -36,6 +68,9 @@ export async function POST(request: Request) {
        VALUES (?, ?, ?, ?, ?, 'pending')`,
       [runnerNickname, raceName, raceDate, distance, Number(finishTime)]
     );
+
+    // Notify admins via Discord (fire and forget)
+    notifyDiscord(runnerNickname, raceName, raceDate, distance, Number(finishTime));
 
     return NextResponse.json(
       { id: Number(result.lastInsertRowid), message: 'Submission received and pending review' },

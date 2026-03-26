@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 
 const navLinks = [
   { href: "/", label: "Leaderboard" },
+  { href: "/submit", label: "Submit Race" },
   { href: "/runners", label: "Runners" },
   { href: "/hall-of-fame", label: "2025 Results" },
-  { href: "/submit", label: "Submit Race" },
   { href: "/admin", label: "Admin" },
 ];
 

@@ -35,8 +35,8 @@ export default function RunnersPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Runners</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Runners</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {runners.map((runner) => {
           const parts = runner.full_name.split(' ');
           const last = parts.slice(-1)[0];
@@ -46,7 +46,7 @@ export default function RunnersPage() {
             <Link
               key={runner.id}
               href={`/runners/${runner.id}`}
-              className="bg-white rounded-xl shadow hover:shadow-md transition-shadow p-5 group"
+              className="bg-white rounded-xl shadow hover:shadow-md transition-shadow p-3 sm:p-5 group"
             >
               <div className="text-lg font-semibold text-amber-700 group-hover:text-amber-900">
                 {display} ({runner.nickname})

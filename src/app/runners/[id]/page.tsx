@@ -94,8 +94,8 @@ export default function RunnerDetailPage({
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-3xl font-bold text-gray-900">
           {(() => {
             const parts = runner.full_name.split(' ');
             const last = parts.slice(-1)[0];
@@ -112,8 +112,8 @@ export default function RunnerDetailPage({
       {/* Race History */}
       {runner.races && runner.races.length > 0 && (
         <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-6 py-3 flex items-center justify-between">
-            <h2 className="text-white font-semibold text-lg">2026 Race History</h2>
+          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-4 sm:px-6 py-3 flex items-center justify-between">
+            <h2 className="text-white font-semibold text-base sm:text-lg">2026 Race History</h2>
             <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
               {runner.races.reduce((sum, r) => sum + r.points_earned, 0)} pts
             </span>
@@ -184,8 +184,8 @@ export default function RunnerDetailPage({
 
       {activePRs.length > 0 ? (
         <div className="bg-white rounded-xl shadow overflow-hidden">
-          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-6 py-3">
-            <h2 className="text-white font-semibold text-lg">Personal Records & Targets</h2>
+          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-4 sm:px-6 py-3">
+            <h2 className="text-white font-semibold text-base sm:text-lg">Personal Records & Targets</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">

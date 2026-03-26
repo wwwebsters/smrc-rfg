@@ -33,11 +33,63 @@ export default function LeaderboardPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">2026 Race for Gold Leaderboard</h1>
-        <p className="text-gray-600 mt-1">Points earned across all races this season</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">2026 Race for Gold Leaderboard</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">Points earned across all races this season</p>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
+      {/* Mobile leaderboard - card layout */}
+      <div className="sm:hidden space-y-2">
+        {data.map((entry, idx) => (
+          <Link
+            key={entry.runner_id}
+            href={`/runners/${entry.runner_id}`}
+            className={`block bg-white rounded-lg shadow-sm p-3 ${idx < 3 ? 'border-l-4' : ''} ${
+              idx === 0 ? 'border-yellow-400' : idx === 1 ? 'border-gray-300' : idx === 2 ? 'border-amber-600' : ''
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${
+                  idx === 0 ? 'bg-yellow-400 text-yellow-900'
+                  : idx === 1 ? 'bg-gray-300 text-gray-700'
+                  : idx === 2 ? 'bg-amber-600 text-white'
+                  : 'text-gray-500'
+                }`}>
+                  {idx + 1}
+                </span>
+                <div>
+                  <div className="font-medium text-amber-700 text-sm">
+                    {(() => {
+                      const parts = entry.full_name.split(' ');
+                      const last = parts.slice(-1)[0];
+                      const first = parts.slice(0, -1).join(' ');
+                      return first ? `${last}, ${first} (${entry.nickname})` : `${last} (${entry.nickname})`;
+                    })()}
+                  </div>
+                  <div className="text-xs text-gray-400">{entry.race_count} races | Eff: {entry.efficiency?.toFixed(1) ?? '-'}</div>
+                </div>
+              </div>
+              <div className="text-xl font-bold text-amber-700">{entry.total_points}</div>
+            </div>
+            {entry.race_scores.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {entry.race_scores.map((score, i) => (
+                  <span key={i} className={`inline-block min-w-[22px] text-center rounded px-1 py-0.5 text-xs font-semibold ${
+                    score.points_earned >= 12 ? 'bg-yellow-200 text-yellow-800'
+                    : score.points_earned >= 6 ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {score.points_earned}
+                  </span>
+                ))}
+              </div>
+            )}
+          </Link>
+        ))}
+      </div>
+
+      {/* Desktop leaderboard - table layout */}
+      <div className="hidden sm:block overflow-x-auto bg-white rounded-xl shadow">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white">

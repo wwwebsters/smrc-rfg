@@ -48,12 +48,12 @@ export default function HallOfFamePage() {
 
   return (
     <div>
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-gray-900">2025 Results</h1>
-        <p className="text-xl text-gray-600 mt-2">Race for Gold Champions</p>
+      <div className="text-center mb-6 sm:mb-10">
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900">2025 Results</h1>
+        <p className="text-base sm:text-xl text-gray-600 mt-1 sm:mt-2">Race for Gold Champions</p>
       </div>
 
-      <div className="flex flex-col md:flex-row items-end justify-center gap-6 mb-12">
+      <div className="flex flex-col md:flex-row items-end justify-center gap-4 sm:gap-6 mb-8 sm:mb-12">
         {/* Silver - 2nd place */}
         <div className="order-2 md:order-1 w-full md:w-72">
           <WinnerCard {...winners[1]} />
@@ -68,8 +68,8 @@ export default function HallOfFamePage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-8 max-w-2xl mx-auto">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">2025 Season Highlights</h2>
+      <div className="bg-white rounded-xl shadow p-4 sm:p-8 max-w-2xl mx-auto">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">2025 Season Highlights</h2>
         <div className="space-y-4 text-gray-600">
           <div className="flex items-start gap-3">
             <span className="text-yellow-500 text-xl mt-0.5">*</span>

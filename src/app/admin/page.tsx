@@ -103,11 +103,11 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Admin Dashboard</h1>
 
       {/* Excel Upload Section */}
-      <section className="bg-white rounded-xl shadow p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Upload Excel Data</h2>
+      <section className="bg-white rounded-xl shadow p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">Upload Excel Data</h2>
         <p className="text-gray-600 mb-4">
           Upload an SMRC Excel spreadsheet to import updated race data.
         </p>
@@ -138,8 +138,8 @@ export default function AdminPage() {
 
       {/* Review Queue */}
       <section className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-6 py-3 flex items-center justify-between">
-          <h2 className="text-white font-semibold text-lg">Pending Submissions</h2>
+        <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-4 sm:px-6 py-3 flex items-center justify-between">
+          <h2 className="text-white font-semibold text-base sm:text-lg">Pending Submissions</h2>
           <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
             {submissions.length} pending
           </span>
@@ -154,7 +154,7 @@ export default function AdminPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {submissions.map((sub) => (
-              <div key={sub.id} className="p-5 hover:bg-yellow-50/30 transition-colors">
+              <div key={sub.id} className="p-3 sm:p-5 hover:bg-yellow-50/30 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">

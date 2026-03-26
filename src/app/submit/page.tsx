@@ -85,8 +85,8 @@ export default function SubmitRacePage() {
 
   return (
     <div className="max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit a Race Result</h1>
-      <p className="text-gray-600 mb-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Submit a Race Result</h1>
+      <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
         Submit your race and it will be reviewed by an admin before appearing on the leaderboard.
       </p>
 

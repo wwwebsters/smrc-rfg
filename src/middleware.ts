@@ -1,27 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Allow the login page and auth API through
+  const { pathname } = request.nextUrl;
+
+  // Allow the login page and auth APIs through
   if (
-    request.nextUrl.pathname === '/login' ||
-    request.nextUrl.pathname === '/api/auth'
+    pathname === '/login' ||
+    pathname === '/api/auth' ||
+    pathname === '/api/admin/auth'
   ) {
     return NextResponse.next();
   }
 
-  // Check for auth cookie
+  // Check for site auth cookie
   const authCookie = request.cookies.get('site-auth');
-  if (authCookie?.value === 'authenticated') {
-    return NextResponse.next();
+  if (authCookie?.value !== 'authenticated') {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Redirect to login
-  return NextResponse.redirect(new URL('/login', request.url));
+  // Admin page and admin action APIs require additional admin auth
+  const isAdminPage = pathname === '/admin';
+  const isAdminActionApi = pathname === '/api/admin/review' || pathname === '/api/admin/upload';
+
+  if (isAdminPage || isAdminActionApi) {
+    const adminCookie = request.cookies.get('admin-auth');
+    if (adminCookie?.value !== 'authenticated') {
+      if (isAdminActionApi) {
+        return new NextResponse(JSON.stringify({ error: 'Admin authentication required' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      // For the admin page, let it through — the page handles its own login prompt
+      return NextResponse.next();
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    // Match all paths except static files and Next.js internals
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };

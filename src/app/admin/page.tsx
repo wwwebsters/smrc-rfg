@@ -24,6 +24,9 @@ function formatRunnerName(nickname: string, runnersMap: Record<string, string>):
 }
 
 export default function AdminPage() {
+  const [adminAuthed, setAdminAuthed] = useState<boolean | null>(null);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminError, setAdminError] = useState('');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [runnersMap, setRunnersMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -32,7 +35,15 @@ export default function AdminPage() {
 
   const fetchSubmissions = useCallback(() => {
     fetch('/api/submissions')
-      .then((r) => r.json())
+      .then((r) => {
+        if (r.status === 401) {
+          setAdminAuthed(false);
+          setLoading(false);
+          return [];
+        }
+        setAdminAuthed(true);
+        return r.json();
+      })
       .then(setSubmissions)
       .finally(() => setLoading(false));
   }, []);
@@ -100,6 +111,57 @@ export default function AdminPage() {
     // Reset file input
     e.target.value = '';
   };
+
+  if (adminAuthed === false) {
+    const handleAdminLogin = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setAdminError('');
+      try {
+        const res = await fetch('/api/admin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: adminPassword }),
+        });
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          setAdminError('Wrong password');
+        }
+      } catch {
+        setAdminError('Something went wrong');
+      }
+    };
+
+    return (
+      <div className="max-w-sm mx-auto mt-12">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Access</h1>
+          <p className="text-gray-500 mt-1">Enter the admin password to continue</p>
+        </div>
+        <form onSubmit={handleAdminLogin} className="bg-white rounded-xl shadow p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Admin Password</label>
+            <input
+              type="password"
+              required
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="Enter admin password"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+              autoFocus
+            />
+          </div>
+          {adminError && <div className="text-red-600 text-sm">{adminError}</div>}
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold py-2.5 rounded-lg hover:from-yellow-600 hover:to-amber-600 transition-all"
+          >
+            Enter
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div>

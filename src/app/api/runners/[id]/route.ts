@@ -85,7 +85,25 @@ export async function GET(
       })
     );
 
-    return NextResponse.json({ ...runner, age: currentAge, prs: updatedPRs });
+    const races = await dbAll<{
+      id: number;
+      race_name: string;
+      race_date: string;
+      distance: string;
+      finish_time_seconds: number;
+      points_earned: number;
+      points_type: string;
+      race_number: number;
+    }>(
+      `SELECT id, race_name, race_date, distance, finish_time_seconds,
+              points_earned, points_type, race_number
+       FROM race_results
+       WHERE runner_id = ? AND status = 'approved'
+       ORDER BY race_number ASC`,
+      [Number(id)]
+    );
+
+    return NextResponse.json({ ...runner, age: currentAge, prs: updatedPRs, races });
   } catch (error) {
     console.error('Runner detail error:', error);
     return NextResponse.json({ error: 'Failed to fetch runner' }, { status: 500 });

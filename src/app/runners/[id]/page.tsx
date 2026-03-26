@@ -16,6 +16,17 @@ interface PR {
   target_seconds: number | null;
 }
 
+interface Race {
+  id: number;
+  race_name: string;
+  race_date: string;
+  distance: string;
+  finish_time_seconds: number;
+  points_earned: number;
+  points_type: string;
+  race_number: number;
+}
+
 interface RunnerDetail {
   id: number;
   nickname: string;
@@ -23,6 +34,7 @@ interface RunnerDetail {
   birthday: string | null;
   age: number | null;
   prs: PR[];
+  races: Race[];
 }
 
 const DISTANCE_DISPLAY: Record<string, string> = {
@@ -96,6 +108,66 @@ export default function RunnerDetailPage({
           {runner.birthday && <span>Born: {runner.birthday}</span>}
         </div>
       </div>
+
+      {/* Race History */}
+      {runner.races && runner.races.length > 0 && (
+        <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
+          <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-6 py-3 flex items-center justify-between">
+            <h2 className="text-white font-semibold text-lg">2026 Race History</h2>
+            <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
+              {runner.races.reduce((sum, r) => sum + r.points_earned, 0)} pts
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 border-b">
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700">#</th>
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Race</th>
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Date</th>
+                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Distance</th>
+                  <th className="px-4 py-3 text-right font-semibold text-gray-700">Time</th>
+                  <th className="px-4 py-3 text-center font-semibold text-gray-700">Points</th>
+                </tr>
+              </thead>
+              <tbody>
+                {runner.races.map((race) => {
+                  const typeLabel: Record<string, string> = {
+                    PR: 'PR',
+                    AG_PR: 'AG PR',
+                    FIRST_TIME: '1st Time',
+                    PARTICIPATION: 'Participation',
+                  };
+                  const typeColor: Record<string, string> = {
+                    PR: 'bg-yellow-200 text-yellow-800',
+                    AG_PR: 'bg-blue-100 text-blue-700',
+                    FIRST_TIME: 'bg-blue-100 text-blue-700',
+                    PARTICIPATION: 'bg-gray-100 text-gray-600',
+                  };
+                  return (
+                    <tr key={race.id} className="border-b border-gray-50 hover:bg-yellow-50/30">
+                      <td className="px-4 py-2.5 text-gray-400">{race.race_number}</td>
+                      <td className="px-4 py-2.5 font-medium">{race.race_name}</td>
+                      <td className="px-4 py-2.5 text-gray-500">{race.race_date}</td>
+                      <td className="px-4 py-2.5 text-gray-500">
+                        {DISTANCE_DISPLAY[race.distance] || race.distance}
+                      </td>
+                      <td className="px-4 py-2.5 text-right font-mono">
+                        {formatTime(race.finish_time_seconds)}
+                      </td>
+                      <td className="px-4 py-2.5 text-center">
+                        <span className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${typeColor[race.points_type] || 'bg-gray-100 text-gray-600'}`}>
+                          {race.points_earned} ({typeLabel[race.points_type] || race.points_type})
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {activePRs.length > 0 ? (
         <div className="bg-white rounded-xl shadow overflow-hidden">

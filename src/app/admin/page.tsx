@@ -35,20 +35,27 @@ export default function AdminPage() {
 
   const fetchSubmissions = useCallback(() => {
     fetch('/api/submissions')
-      .then((r) => {
-        if (r.status === 401) {
-          setAdminAuthed(false);
-          setLoading(false);
-          return [];
-        }
-        setAdminAuthed(true);
-        return r.json();
-      })
+      .then((r) => r.json())
       .then(setSubmissions)
       .finally(() => setLoading(false));
   }, []);
 
+  // Check admin auth by hitting a protected endpoint
   useEffect(() => {
+    fetch('/api/admin/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+      .then((r) => {
+        if (r.status === 401) {
+          setAdminAuthed(false);
+        } else {
+          setAdminAuthed(true);
+          fetchSubmissions();
+        }
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (adminAuthed !== true) return;
     fetchSubmissions();
     fetch('/api/runners')
       .then((r) => r.json())

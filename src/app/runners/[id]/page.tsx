@@ -128,6 +128,7 @@ export default function RunnerDetailPage({
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Distance</th>
                   <th className="px-4 py-3 text-right font-semibold text-gray-700">Time</th>
                   <th className="px-4 py-3 text-center font-semibold text-gray-700">Points</th>
+                  <th className="px-4 py-3 text-center font-semibold text-gray-700">Type</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,15 +156,27 @@ export default function RunnerDetailPage({
                       <td className="px-4 py-2.5 text-right font-mono">
                         {formatTime(race.finish_time_seconds)}
                       </td>
+                      <td className="px-4 py-2.5 text-center font-bold text-amber-700">
+                        {race.points_earned}
+                      </td>
                       <td className="px-4 py-2.5 text-center">
                         <span className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${typeColor[race.points_type] || 'bg-gray-100 text-gray-600'}`}>
-                          {race.points_earned} ({typeLabel[race.points_type] || race.points_type})
+                          {typeLabel[race.points_type] || race.points_type}
                         </span>
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
+              <tfoot>
+                <tr className="bg-gray-50 border-t-2 border-gray-200">
+                  <td colSpan={5} className="px-4 py-2.5 text-right font-semibold text-gray-700">Total:</td>
+                  <td className="px-4 py-2.5 text-center font-bold text-lg text-amber-700">
+                    {runner.races.reduce((sum, r) => sum + r.points_earned, 0)}
+                  </td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

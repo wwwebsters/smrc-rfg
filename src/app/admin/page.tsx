@@ -98,7 +98,8 @@ export default function AdminPage() {
         data.forEach((r) => { map[r.nickname] = r.full_name; });
         setRunnersMap(map);
       });
-  }, [fetchSubmissions]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminAuthed]);
 
   const handleReview = async (submissionId: number, action: 'approve' | 'reject') => {
     setProcessing(submissionId);

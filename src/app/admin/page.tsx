@@ -26,6 +26,7 @@ interface ApprovedResult {
   points_earned: number;
   points_type: string;
   race_number: number;
+  submitted_at: string | null;
 }
 
 const DISTANCES = [
@@ -322,6 +323,7 @@ export default function AdminPage() {
                   <th className="px-3 py-2.5 text-right font-semibold text-gray-700">Time</th>
                   <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Pts</th>
                   <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Type</th>
+                  <th className="px-3 py-2.5 text-left font-semibold text-gray-700">Submitted</th>
                   <th className="px-3 py-2.5 text-center font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
@@ -409,6 +411,9 @@ export default function AdminPage() {
                             ))}
                           </select>
                         </td>
+                        <td className="px-3 py-2 text-gray-500 text-sm">
+                          {result.submitted_at ? new Date(result.submitted_at).toLocaleDateString() : '--'}
+                        </td>
                         <td className="px-3 py-2 text-center">
                           <div className="flex gap-1 justify-center">
                             <button
@@ -478,6 +483,9 @@ export default function AdminPage() {
                         <span className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${typeColor[result.points_type] || 'bg-gray-100 text-gray-600'}`}>
                           {typeLabel[result.points_type] || result.points_type}
                         </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-gray-500 text-sm">
+                        {result.submitted_at ? new Date(result.submitted_at).toLocaleDateString() : '--'}
                       </td>
                       <td className="px-3 py-2.5 text-center">
                         <div className="flex gap-2 justify-center">

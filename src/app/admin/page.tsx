@@ -495,6 +495,29 @@ export default function AdminPage() {
                         >
                           Edit
                         </button>
+                        <button
+                          onClick={async () => {
+                            if (!confirm(`Delete ${formatRunnerName(result.nickname, runnersMap)}'s ${result.race_name} result?`)) return;
+                            try {
+                              const res = await fetch('/api/admin/results', {
+                                method: 'DELETE',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: result.id }),
+                              });
+                              if (res.ok) {
+                                fetchApprovedResults();
+                              } else {
+                                const data = await res.json();
+                                alert(data.error || 'Delete failed');
+                              }
+                            } catch {
+                              alert('Network error');
+                            }
+                          }}
+                          className="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   );

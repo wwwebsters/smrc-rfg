@@ -53,3 +53,29 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Failed to update result' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing result id' }, { status: 400 });
+    }
+
+    const existing = await dbGet<{ id: number }>(
+      `SELECT id FROM race_results WHERE id = ?`,
+      [id]
+    );
+
+    if (!existing) {
+      return NextResponse.json({ error: 'Result not found' }, { status: 404 });
+    }
+
+    await dbRun(`DELETE FROM race_results WHERE id = ?`, [id]);
+
+    return NextResponse.json({ message: 'Result deleted' });
+  } catch (error) {
+    console.error('Admin results DELETE error:', error);
+    return NextResponse.json({ error: 'Failed to delete result' }, { status: 500 });
+  }
+}

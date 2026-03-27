@@ -18,20 +18,20 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Admin page and admin action APIs require additional admin auth
-  const isAdminPage = pathname === '/admin';
-  const isAdminActionApi = pathname === '/api/admin/review' || pathname === '/api/admin/upload' || pathname === '/api/admin/results' || pathname === '/api/admin/runners';
+  // Admin pages and admin APIs require additional admin auth
+  const isAdminPage = pathname.startsWith('/admin');
+  const isAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
-  if (isAdminPage || isAdminActionApi) {
+  if (isAdminPage || isAdminApi) {
     const adminCookie = request.cookies.get('admin-auth');
     if (adminCookie?.value !== 'authenticated') {
-      if (isAdminActionApi) {
+      if (isAdminApi) {
         return new NextResponse(JSON.stringify({ error: 'Admin authentication required' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json' },
         });
       }
-      // For the admin page, let it through — the page handles its own login prompt
+      // For admin pages, let through — the layout handles the login prompt
       return NextResponse.next();
     }
   }

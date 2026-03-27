@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbRun, dbGet, getDb } from '@/lib/db';
+import { dbRun, dbGet, dbAll, getDb } from '@/lib/db';
 import { parseTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
@@ -47,7 +47,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Insert runner
     const result = await dbRun(
       `INSERT INTO runners (nickname, full_name, birthday, age) VALUES (?, ?, ?, ?)`,
       [nickname.trim(), fullName.trim(), birthday || null, age]
@@ -55,13 +54,11 @@ export async function POST(request: Request) {
 
     const runnerId = Number(result.lastInsertRowid);
 
-    // Insert PR data for each distance that has any data
     if (prs && typeof prs === 'object') {
       const statements: { sql: string; args: (string | number | null)[] }[] = [];
 
       for (const [dist, prData] of Object.entries(prs)) {
         const d = prData as Record<string, string>;
-        // Skip if no data entered for this distance
         const hasData = d.pr || d.agPr || d.agPrDate || d.ageAtAgPr || d.factorAtRace || d.agTime || d.todaysFactor || d.target;
         if (!hasData) continue;
 
@@ -99,5 +96,64 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Add runner error:', error);
     return NextResponse.json({ error: 'Failed to add runner' }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const runners = await dbAll(
+      `SELECT r.id, r.nickname, r.full_name, r.birthday, r.age,
+              (SELECT COUNT(*) FROM race_results rr WHERE rr.runner_id = r.id AND rr.status = 'approved') as race_count
+       FROM runners r ORDER BY r.full_name ASC`
+    );
+    return NextResponse.json(runners);
+  } catch (error) {
+    console.error('Admin runners GET error:', error);
+    return NextResponse.json({ error: 'Failed to fetch runners' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing runner id' }, { status: 400 });
+    }
+
+    const runner = await dbGet<{ id: number; nickname: string }>(
+      `SELECT id, nickname FROM runners WHERE id = ?`,
+      [id]
+    );
+
+    if (!runner) {
+      return NextResponse.json({ error: 'Runner not found' }, { status: 404 });
+    }
+
+    // Check for approved race results
+    const results = await dbAll(
+      `SELECT id FROM race_results WHERE runner_id = ? AND status = 'approved'`,
+      [id]
+    );
+
+    if (results.length > 0) {
+      return NextResponse.json(
+        { error: `Cannot delete "${runner.nickname}" — they have ${results.length} approved race result(s). Delete those first.` },
+        { status: 409 }
+      );
+    }
+
+    // Delete PRs, pending submissions, then runner
+    const db = getDb();
+    await db.batch([
+      { sql: 'DELETE FROM runner_prs WHERE runner_id = ?', args: [id] },
+      { sql: 'DELETE FROM pending_submissions WHERE runner_nickname = ?', args: [runner.nickname] },
+      { sql: 'DELETE FROM runners WHERE id = ?', args: [id] },
+    ], 'write');
+
+    return NextResponse.json({ message: `Runner "${runner.nickname}" deleted` });
+  } catch (error) {
+    console.error('Delete runner error:', error);
+    return NextResponse.json({ error: 'Failed to delete runner' }, { status: 500 });
   }
 }

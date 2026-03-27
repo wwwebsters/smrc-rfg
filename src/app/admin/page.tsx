@@ -59,7 +59,13 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<ApprovedResult>>({});
   const [saving, setSaving] = useState(false);
-  const [newRunner, setNewRunner] = useState({ nickname: '', fullName: '', birthday: '' });
+  const [newRunner, setNewRunner] = useState<{
+    nickname: string; fullName: string; birthday: string;
+    prs: Record<string, { pr: string; agPr: string; agPrDate: string; ageAtAgPr: string; factorAtRace: string; agTime: string; todaysFactor: string; target: string }>;
+  }>({
+    nickname: '', fullName: '', birthday: '',
+    prs: {},
+  });
   const [addRunnerMsg, setAddRunnerMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [addingRunner, setAddingRunner] = useState(false);
 
@@ -228,94 +234,6 @@ export default function AdminPage() {
               : 'bg-red-50 text-red-800 border border-red-200'
           }`}>
             {uploadMessage.text}
-          </div>
-        )}
-      </section>
-
-      {/* Add Runner */}
-      <section className="card p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4" style={{ color: 'var(--text-primary)' }}>Add Runner</h2>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setAddRunnerMsg(null);
-            setAddingRunner(true);
-            try {
-              const res = await fetch('/api/admin/runners', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newRunner),
-              });
-              const data = await res.json();
-              if (res.ok) {
-                setAddRunnerMsg({ type: 'success', text: data.message });
-                setNewRunner({ nickname: '', fullName: '', birthday: '' });
-                // Refresh runners map
-                fetch('/api/runners').then(r => r.json()).then((data: { nickname: string; full_name: string }[]) => {
-                  const map: Record<string, string> = {};
-                  data.forEach((r) => { map[r.nickname] = r.full_name; });
-                  setRunnersMap(map);
-                });
-              } else {
-                setAddRunnerMsg({ type: 'error', text: data.error || 'Failed to add runner' });
-              }
-            } catch {
-              setAddRunnerMsg({ type: 'error', text: 'Network error' });
-            } finally {
-              setAddingRunner(false);
-            }
-          }}
-          className="flex flex-col sm:flex-row gap-3 items-end"
-        >
-          <div className="flex-1 w-full">
-            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nickname</label>
-            <input
-              type="text"
-              required
-              value={newRunner.nickname}
-              onChange={(e) => setNewRunner({ ...newRunner, nickname: e.target.value })}
-              placeholder="e.g., Speedy"
-              className="input"
-            />
-          </div>
-          <div className="flex-1 w-full">
-            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Full Name</label>
-            <input
-              type="text"
-              required
-              value={newRunner.fullName}
-              onChange={(e) => setNewRunner({ ...newRunner, fullName: e.target.value })}
-              placeholder="e.g., John Smith"
-              className="input"
-            />
-          </div>
-          <div className="flex-1 w-full">
-            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday</label>
-            <input
-              type="date"
-              value={newRunner.birthday}
-              onChange={(e) => setNewRunner({ ...newRunner, birthday: e.target.value })}
-              className="input"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={addingRunner}
-            className="btn-primary sm:w-auto px-6 whitespace-nowrap"
-          >
-            {addingRunner ? 'Adding...' : 'Add Runner'}
-          </button>
-        </form>
-        {addRunnerMsg && (
-          <div
-            className="mt-3 p-3 rounded-lg text-sm"
-            style={{
-              background: addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.08)' : 'rgba(226,68,92,0.08)',
-              color: addRunnerMsg.type === 'success' ? '#00854D' : '#D83A52',
-              border: `1px solid ${addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.25)' : 'rgba(226,68,92,0.25)'}`,
-            }}
-          >
-            {addRunnerMsg.text}
           </div>
         )}
       </section>
@@ -601,6 +519,127 @@ export default function AdminPage() {
             </table>
           </div>
         )}
+      </section>
+
+      {/* Add Runner */}
+      <section className="card overflow-hidden mt-6 sm:mt-8">
+        <div className="px-4 sm:px-6 py-3" style={{ background: 'var(--nav-bg)' }}>
+          <h2 className="text-white font-semibold text-base sm:text-lg">Add Runner</h2>
+        </div>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setAddRunnerMsg(null);
+            setAddingRunner(true);
+            try {
+              const res = await fetch('/api/admin/runners', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newRunner),
+              });
+              const data = await res.json();
+              if (res.ok) {
+                setAddRunnerMsg({ type: 'success', text: data.message });
+                setNewRunner({ nickname: '', fullName: '', birthday: '', prs: {} });
+                fetch('/api/runners').then(r => r.json()).then((data: { nickname: string; full_name: string }[]) => {
+                  const map: Record<string, string> = {};
+                  data.forEach((r) => { map[r.nickname] = r.full_name; });
+                  setRunnersMap(map);
+                });
+              } else {
+                setAddRunnerMsg({ type: 'error', text: data.error || 'Failed to add runner' });
+              }
+            } catch {
+              setAddRunnerMsg({ type: 'error', text: 'Network error' });
+            } finally {
+              setAddingRunner(false);
+            }
+          }}
+          className="p-4 sm:p-6"
+        >
+          {/* Runner basics */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nickname *</label>
+              <input type="text" required value={newRunner.nickname} onChange={(e) => setNewRunner({ ...newRunner, nickname: e.target.value })} placeholder="e.g., Speedy" className="input" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Full Name *</label>
+              <input type="text" required value={newRunner.fullName} onChange={(e) => setNewRunner({ ...newRunner, fullName: e.target.value })} placeholder="e.g., John Smith" className="input" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday</label>
+              <input type="date" value={newRunner.birthday} onChange={(e) => setNewRunner({ ...newRunner, birthday: e.target.value })} className="input" />
+            </div>
+          </div>
+
+          {/* PR data by distance */}
+          <h3 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Personal Records & Targets</h3>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>Leave blank for distances not yet raced. Times in H:MM:SS or MM:SS format.</p>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr style={{ background: 'var(--background)', borderBottom: '1px solid var(--card-border)' }}>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Distance</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>PR</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG PR</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG PR Date</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Age @ PR</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Factor</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG Time</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Today&apos;s Factor</th>
+                  <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--accent-gold)' }}>Target</th>
+                </tr>
+              </thead>
+              <tbody>
+                {DISTANCES.map((dist) => {
+                  const prData = newRunner.prs[dist] || { pr: '', agPr: '', agPrDate: '', ageAtAgPr: '', factorAtRace: '', agTime: '', todaysFactor: '', target: '' };
+                  const updatePR = (field: string, value: string) => {
+                    setNewRunner({
+                      ...newRunner,
+                      prs: {
+                        ...newRunner.prs,
+                        [dist]: { ...prData, [field]: value },
+                      },
+                    });
+                  };
+                  return (
+                    <tr key={dist} style={{ borderBottom: '1px solid var(--card-border)' }}>
+                      <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>{dist}</td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.pr} onChange={(e) => updatePR('pr', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.agPr} onChange={(e) => updatePR('agPr', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="date" value={prData.agPrDate} onChange={(e) => updatePR('agPrDate', e.target.value)} className="input py-1.5 text-xs" style={{ minWidth: '120px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="number" value={prData.ageAtAgPr} onChange={(e) => updatePR('ageAtAgPr', e.target.value)} placeholder="Age" className="input py-1.5 text-xs" style={{ minWidth: '55px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.factorAtRace} onChange={(e) => updatePR('factorAtRace', e.target.value)} placeholder="0.0000" className="input py-1.5 text-xs" style={{ minWidth: '70px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.agTime} onChange={(e) => updatePR('agTime', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.todaysFactor} onChange={(e) => updatePR('todaysFactor', e.target.value)} placeholder="0.0000" className="input py-1.5 text-xs" style={{ minWidth: '70px' }} /></td>
+                      <td className="px-3 py-1.5"><input type="text" value={prData.target} onChange={(e) => updatePR('target', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-6 flex items-center gap-4">
+            <button type="submit" disabled={addingRunner} className="btn-primary sm:w-auto px-8">
+              {addingRunner ? 'Adding...' : 'Add Runner'}
+            </button>
+          </div>
+
+          {addRunnerMsg && (
+            <div
+              className="mt-4 p-3 rounded-lg text-sm"
+              style={{
+                background: addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.08)' : 'rgba(226,68,92,0.08)',
+                color: addRunnerMsg.type === 'success' ? '#00854D' : '#D83A52',
+                border: `1px solid ${addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.25)' : 'rgba(226,68,92,0.25)'}`,
+              }}
+            >
+              {addRunnerMsg.text}
+            </div>
+          )}
+        </form>
       </section>
     </div>
   );

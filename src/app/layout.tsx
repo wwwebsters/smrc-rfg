@@ -73,7 +73,8 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="bg-gray-800 text-gray-400 text-center py-3 sm:py-4 text-xs sm:text-sm">
-          SMRC Race for Gold &copy; {new Date().getFullYear()}
+          <div>SMRC &copy; {new Date().getFullYear()}</div>
+          <div className="italic mt-1">Run all the miles, drink all the beer.</div>
         </footer>
       </body>
     </html>

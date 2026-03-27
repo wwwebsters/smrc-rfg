@@ -188,27 +188,57 @@ export async function DELETE(request: Request) {
 
     // If this was a PR or AG PR, restore the previous runner_prs state
     if (existing.points_type === 'PR' || existing.points_type === 'AG_PR') {
-      if (existing.points_type === 'PR') {
-        await dbRun(
-          `UPDATE runner_prs
-           SET pr_time_seconds = ?, ag_pr_time_seconds = ?, ag_pr_date = ?,
-               age_at_ag_pr = ?, factor_at_race = ?
-           WHERE runner_id = ? AND distance = ?`,
-          [existing.previous_pr_time_seconds, existing.previous_ag_pr_time_seconds,
-           existing.previous_ag_pr_date, existing.previous_age_at_ag_pr,
-           existing.previous_factor_at_race, existing.runner_id, distKey]
-        );
+      if (existing.previous_pr_time_seconds !== null) {
+        // We have stored previous state — restore it
+        if (existing.points_type === 'PR') {
+          await dbRun(
+            `UPDATE runner_prs
+             SET pr_time_seconds = ?, ag_pr_time_seconds = ?, ag_pr_date = ?,
+                 age_at_ag_pr = ?, factor_at_race = ?
+             WHERE runner_id = ? AND distance = ?`,
+            [existing.previous_pr_time_seconds, existing.previous_ag_pr_time_seconds,
+             existing.previous_ag_pr_date, existing.previous_age_at_ag_pr,
+             existing.previous_factor_at_race, existing.runner_id, distKey]
+          );
+        } else {
+          await dbRun(
+            `UPDATE runner_prs
+             SET ag_pr_time_seconds = ?, ag_pr_date = ?,
+                 age_at_ag_pr = ?, factor_at_race = ?
+             WHERE runner_id = ? AND distance = ?`,
+            [existing.previous_ag_pr_time_seconds, existing.previous_ag_pr_date,
+             existing.previous_age_at_ag_pr, existing.previous_factor_at_race,
+             existing.runner_id, distKey]
+          );
+        }
       } else {
-        // AG PR — restore only AG PR fields
-        await dbRun(
-          `UPDATE runner_prs
-           SET ag_pr_time_seconds = ?, ag_pr_date = ?,
-               age_at_ag_pr = ?, factor_at_race = ?
-           WHERE runner_id = ? AND distance = ?`,
-          [existing.previous_ag_pr_time_seconds, existing.previous_ag_pr_date,
-           existing.previous_age_at_ag_pr, existing.previous_factor_at_race,
-           existing.runner_id, distKey]
+        // No stored previous state — find the next best from remaining results
+        // First delete this result, then scan remaining
+        await dbRun(`DELETE FROM race_results WHERE id = ?`, [id]);
+
+        const remaining = await dbAll<{ finish_time_seconds: number }>(
+          `SELECT finish_time_seconds FROM race_results
+           WHERE runner_id = ? AND distance = ? AND status = 'approved'
+           ORDER BY finish_time_seconds ASC LIMIT 1`,
+          [existing.runner_id, existing.distance]
         );
+
+        if (remaining.length > 0) {
+          // There's still a result — set PR to the best remaining time
+          // But only update pr_time_seconds, not ag fields (those are from the seed)
+          await dbRun(
+            `UPDATE runner_prs SET pr_time_seconds = ? WHERE runner_id = ? AND distance = ?`,
+            [remaining[0].finish_time_seconds, existing.runner_id, distKey]
+          );
+        }
+        // If no remaining results, the PR should revert to seed data
+        // but we can't determine that here — admin should fix via Manage Runners
+
+        return NextResponse.json({
+          message: 'Result deleted. Previous PR state was not tracked for this record — please verify runner PR data in Manage Runners.',
+          restored: false,
+          needsReview: true,
+        });
       }
     }
 

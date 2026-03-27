@@ -207,37 +207,6 @@ export default function AdminPage() {
     <div>
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6" style={{ color: 'var(--text-primary)' }}>Admin Dashboard</h1>
 
-      {/* Excel Upload Section */}
-      <section className="card p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4" style={{ color: 'var(--text-primary)' }}>Upload Excel Data</h2>
-        <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
-          Upload an SMRC Excel spreadsheet to import updated race data.
-        </p>
-
-        <label className="inline-flex items-center gap-2 px-6 py-3 rounded-lg cursor-pointer font-semibold text-white transition-all" style={{ background: 'var(--accent-blue)' }}>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
-          Choose File
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={handleUpload}
-            className="hidden"
-          />
-        </label>
-
-        {uploadMessage && (
-          <div className={`mt-4 p-4 rounded-lg ${
-            uploadMessage.type === 'success'
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {uploadMessage.text}
-          </div>
-        )}
-      </section>
-
       {/* Review Queue */}
       <section className="card overflow-hidden">
         <div className="px-4 sm:px-6 py-3 flex items-center justify-between" style={{ background: 'var(--nav-bg)' }}>
@@ -640,6 +609,37 @@ export default function AdminPage() {
             </div>
           )}
         </form>
+      </section>
+
+      {/* Excel Upload Section */}
+      <section className="card p-4 sm:p-6 mt-6 sm:mt-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4" style={{ color: 'var(--text-primary)' }}>Upload Excel Data</h2>
+        <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
+          Upload an SMRC Excel spreadsheet to import updated race data.
+        </p>
+
+        <label className="inline-flex items-center gap-2 px-6 py-3 rounded-lg cursor-pointer font-semibold text-white transition-all" style={{ background: 'var(--accent-blue)' }}>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          Choose File
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleUpload}
+            className="hidden"
+          />
+        </label>
+
+        {uploadMessage && (
+          <div className={`mt-4 p-4 rounded-lg ${
+            uploadMessage.type === 'success'
+              ? 'bg-green-50 text-green-800 border border-green-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}>
+            {uploadMessage.text}
+          </div>
+        )}
       </section>
     </div>
   );

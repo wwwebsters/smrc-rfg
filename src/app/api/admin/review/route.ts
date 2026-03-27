@@ -102,8 +102,8 @@ export async function POST(request: Request) {
       return 4;
     }
 
-    const pr = await dbGet<PRRow>(
-      `SELECT pr_time_seconds, ag_pr_time_seconds, target_seconds, todays_factor
+    const pr = await dbGet<PRRow & { ag_pr_date: string | null; age_at_ag_pr: number | null; factor_at_race: number | null }>(
+      `SELECT pr_time_seconds, ag_pr_time_seconds, ag_pr_date, age_at_ag_pr, factor_at_race, target_seconds, todays_factor
        FROM runner_prs
        WHERE runner_id = ? AND distance = ?`,
       [runner.id, distKey]
@@ -130,12 +130,21 @@ export async function POST(request: Request) {
     // Build all the SQL statements for the transaction
     const statements: { sql: string; args: (string | number | null)[] }[] = [];
 
-    // Insert race result
+    // Save previous PR state for rollback on delete
+    const prevPr = pr?.pr_time_seconds ?? null;
+    const prevAgPr = pr?.ag_pr_time_seconds ?? null;
+    const prevAgPrDate = pr?.ag_pr_date ?? null;
+    const prevAgeAtAgPr = pr?.age_at_ag_pr ?? null;
+    const prevFactorAtRace = pr?.factor_at_race ?? null;
+
+    // Insert race result with previous state
     statements.push({
-      sql: `INSERT INTO race_results (runner_id, race_name, race_date, distance, finish_time_seconds, points_earned, points_type, race_number, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'approved')`,
+      sql: `INSERT INTO race_results (runner_id, race_name, race_date, distance, finish_time_seconds, points_earned, points_type, race_number, status,
+            previous_pr_time_seconds, previous_ag_pr_time_seconds, previous_ag_pr_date, previous_age_at_ag_pr, previous_factor_at_race)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, ?, ?, ?, ?)`,
       args: [runner.id, submission.race_name, submission.race_date, submission.distance,
-             submission.finish_time_seconds, pointsEarned, pointsType, nextRaceNumber],
+             submission.finish_time_seconds, pointsEarned, pointsType, nextRaceNumber,
+             prevPr, prevAgPr, prevAgPrDate, prevAgeAtAgPr, prevFactorAtRace],
     });
 
     // Get runner age data for PR updates

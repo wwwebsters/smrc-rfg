@@ -90,6 +90,11 @@ async function main() {
         finish_time_seconds REAL NOT NULL,
         points_earned INTEGER NOT NULL,
         points_type TEXT NOT NULL,
+        previous_pr_time_seconds REAL,
+        previous_ag_pr_time_seconds REAL,
+        previous_ag_pr_date TEXT,
+        previous_age_at_ag_pr INTEGER,
+        previous_factor_at_race REAL,
         race_number INTEGER NOT NULL,
         status TEXT NOT NULL DEFAULT 'approved',
         FOREIGN KEY (runner_id) REFERENCES runners(id)

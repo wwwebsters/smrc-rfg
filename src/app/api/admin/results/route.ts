@@ -65,8 +65,21 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing result id' }, { status: 400 });
     }
 
-    const existing = await dbGet<{ id: number }>(
-      `SELECT id FROM race_results WHERE id = ?`,
+    const existing = await dbGet<{
+      id: number;
+      runner_id: number;
+      distance: string;
+      points_type: string;
+      previous_pr_time_seconds: number | null;
+      previous_ag_pr_time_seconds: number | null;
+      previous_ag_pr_date: string | null;
+      previous_age_at_ag_pr: number | null;
+      previous_factor_at_race: number | null;
+    }>(
+      `SELECT id, runner_id, distance, points_type,
+              previous_pr_time_seconds, previous_ag_pr_time_seconds,
+              previous_ag_pr_date, previous_age_at_ag_pr, previous_factor_at_race
+       FROM race_results WHERE id = ?`,
       [id]
     );
 
@@ -74,9 +87,48 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Result not found' }, { status: 404 });
     }
 
+    // Map display distance to DB key for runner_prs lookup
+    const distMap: Record<string, string> = {
+      '5k': '5 km', '4 mile': '4 Mile', '5 mile': '5 Mile',
+      '10k': '10 km', '8 mile': '8 km', '15k': '15 km',
+      '10 mile': '10 Mile', 'Half Marathon': 'H. Mar',
+      'Full Marathon': 'Marathon', '50k': '50 km',
+      '50 Mile': '50 Mile', '100 Mile': '100 Mile',
+    };
+    const distKey = distMap[existing.distance] || existing.distance;
+
+    // If this was a PR or AG PR, restore the previous runner_prs state
+    if (existing.points_type === 'PR' || existing.points_type === 'AG_PR') {
+      if (existing.points_type === 'PR') {
+        await dbRun(
+          `UPDATE runner_prs
+           SET pr_time_seconds = ?, ag_pr_time_seconds = ?, ag_pr_date = ?,
+               age_at_ag_pr = ?, factor_at_race = ?
+           WHERE runner_id = ? AND distance = ?`,
+          [existing.previous_pr_time_seconds, existing.previous_ag_pr_time_seconds,
+           existing.previous_ag_pr_date, existing.previous_age_at_ag_pr,
+           existing.previous_factor_at_race, existing.runner_id, distKey]
+        );
+      } else {
+        // AG PR — restore only AG PR fields
+        await dbRun(
+          `UPDATE runner_prs
+           SET ag_pr_time_seconds = ?, ag_pr_date = ?,
+               age_at_ag_pr = ?, factor_at_race = ?
+           WHERE runner_id = ? AND distance = ?`,
+          [existing.previous_ag_pr_time_seconds, existing.previous_ag_pr_date,
+           existing.previous_age_at_ag_pr, existing.previous_factor_at_race,
+           existing.runner_id, distKey]
+        );
+      }
+    }
+
     await dbRun(`DELETE FROM race_results WHERE id = ?`, [id]);
 
-    return NextResponse.json({ message: 'Result deleted' });
+    return NextResponse.json({
+      message: 'Result deleted',
+      restored: existing.points_type === 'PR' || existing.points_type === 'AG_PR',
+    });
   } catch (error) {
     console.error('Admin results DELETE error:', error);
     return NextResponse.json({ error: 'Failed to delete result' }, { status: 500 });

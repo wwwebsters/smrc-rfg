@@ -8,6 +8,7 @@ const adminLinks = [
   { href: '/admin', label: 'Pending Submissions' },
   { href: '/admin/results', label: 'Approved Results' },
   { href: '/admin/runners', label: 'Manage Runners' },
+  { href: '/admin/add-runner', label: 'Add Runner' },
   { href: '/admin/upload', label: 'Upload Data' },
 ];
 

@@ -8,11 +8,12 @@ export async function GET() {
     const results = await dbAll(
       `SELECT rr.id, rr.runner_id, r.nickname, r.full_name, rr.race_name, rr.race_date,
               rr.distance, rr.finish_time_seconds, rr.points_earned, rr.points_type, rr.race_number,
-              ps.submitted_at
+              (SELECT ps.submitted_at FROM pending_submissions ps
+               WHERE ps.runner_nickname = r.nickname AND ps.race_name = rr.race_name
+               AND ps.race_date = rr.race_date AND ps.status = 'approved'
+               ORDER BY ps.id DESC LIMIT 1) as submitted_at
        FROM race_results rr
        JOIN runners r ON rr.runner_id = r.id
-       LEFT JOIN pending_submissions ps ON ps.runner_nickname = r.nickname
-         AND ps.race_name = rr.race_name AND ps.race_date = rr.race_date AND ps.status = 'approved'
        WHERE rr.status = 'approved'
        ORDER BY rr.race_date ASC, rr.id ASC`
     );

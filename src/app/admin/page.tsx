@@ -179,29 +179,16 @@ export default function AdminPage() {
     return (
       <div className="max-w-sm mx-auto mt-12">
         <div className="text-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Access</h1>
-          <p className="text-gray-500 mt-1">Enter the admin password to continue</p>
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Admin Access</h1>
+          <p style={{ color: 'var(--text-muted)' }} className="mt-1">Enter the admin password to continue</p>
         </div>
-        <form onSubmit={handleAdminLogin} className="bg-white rounded-xl shadow p-6 space-y-4">
+        <form onSubmit={handleAdminLogin} className="card p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Admin Password</label>
-            <input
-              type="password"
-              required
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              placeholder="Enter admin password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              autoFocus
-            />
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Admin Password</label>
+            <input type="password" required value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} placeholder="Enter admin password" className="input" autoFocus />
           </div>
-          {adminError && <div className="text-red-600 text-sm">{adminError}</div>}
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold py-2.5 rounded-lg hover:from-yellow-600 hover:to-amber-600 transition-all"
-          >
-            Enter
-          </button>
+          {adminError && <div className="text-sm" style={{ color: '#D83A52' }}>{adminError}</div>}
+          <button type="submit" className="btn-primary">Enter</button>
         </form>
       </div>
     );
@@ -209,16 +196,16 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Admin Dashboard</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6" style={{ color: 'var(--text-primary)' }}>Admin Dashboard</h1>
 
       {/* Excel Upload Section */}
-      <section className="bg-white rounded-xl shadow p-4 sm:p-6 mb-6 sm:mb-8">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">Upload Excel Data</h2>
-        <p className="text-gray-600 mb-4">
+      <section className="card p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4" style={{ color: 'var(--text-primary)' }}>Upload Excel Data</h2>
+        <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
           Upload an SMRC Excel spreadsheet to import updated race data.
         </p>
 
-        <label className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold rounded-lg cursor-pointer hover:from-yellow-600 hover:to-amber-600 transition-all">
+        <label className="inline-flex items-center gap-2 px-6 py-3 rounded-lg cursor-pointer font-semibold text-white transition-all" style={{ background: 'var(--accent-blue)' }}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
@@ -243,10 +230,10 @@ export default function AdminPage() {
       </section>
 
       {/* Review Queue */}
-      <section className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="bg-gradient-to-r from-yellow-500 to-amber-500 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <section className="card overflow-hidden">
+        <div className="px-4 sm:px-6 py-3 flex items-center justify-between" style={{ background: 'var(--nav-bg)' }}>
           <h2 className="text-white font-semibold text-base sm:text-lg">Pending Submissions</h2>
-          <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
+          <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ background: 'rgba(245,166,35,0.2)', color: 'var(--accent-gold)' }}>
             {submissions.length} pending
           </span>
         </div>
@@ -264,9 +251,9 @@ export default function AdminPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="font-semibold text-gray-900">{formatRunnerName(sub.runner_nickname, runnersMap)}</span>
-                      <span className="text-gray-400">|</span>
-                      <span className="text-gray-700">{sub.race_name}</span>
+                      <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{formatRunnerName(sub.runner_nickname, runnersMap)}</span>
+                      <span style={{ color: 'var(--card-border)' }}>|</span>
+                      <span style={{ color: 'var(--text-primary)' }}>{sub.race_name}</span>
                     </div>
                     <div className="flex flex-wrap gap-3 text-sm text-gray-500">
                       <span>{sub.race_date}</span>
@@ -299,10 +286,10 @@ export default function AdminPage() {
       </section>
 
       {/* Approved Results */}
-      <section className="bg-white rounded-xl shadow overflow-hidden mt-6 sm:mt-8">
-        <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <section className="card overflow-hidden mt-6 sm:mt-8">
+        <div className="px-4 sm:px-6 py-3 flex items-center justify-between" style={{ background: 'var(--nav-bg)' }}>
           <h2 className="text-white font-semibold text-base sm:text-lg">Approved Results</h2>
-          <span className="bg-white/20 text-white text-sm font-medium px-3 py-1 rounded-full">
+          <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ background: 'rgba(0,200,117,0.15)', color: '#00854D' }}>
             {approvedResults.length} races
           </span>
         </div>

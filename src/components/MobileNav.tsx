@@ -17,7 +17,8 @@ export function MobileNav({ links }: { links: NavLink[] }) {
     <div className="md:hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="text-white p-2 rounded-md hover:bg-white/10 transition-colors"
+        className="p-2 rounded-lg transition-colors hover:bg-white/10"
+        style={{ color: 'var(--nav-text)' }}
         aria-label="Toggle menu"
       >
         {open ? (
@@ -32,18 +33,23 @@ export function MobileNav({ links }: { links: NavLink[] }) {
       </button>
 
       {open && (
-        <div className="absolute top-14 left-0 right-0 bg-amber-600 shadow-lg z-50 border-t border-amber-400">
+        <div className="absolute top-14 left-0 right-0 shadow-lg z-50" style={{ background: '#252836' }}>
           <div className="flex flex-col">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className={`px-6 py-3 text-sm font-medium transition-colors border-b border-amber-500/30 ${
+                className={`px-6 py-3.5 text-sm font-medium transition-colors border-b ${
                   pathname === link.href
-                    ? 'text-white bg-amber-700'
-                    : 'text-yellow-100 hover:text-white hover:bg-amber-700/50'
+                    ? 'text-white'
+                    : 'hover:text-white'
                 }`}
+                style={{
+                  color: pathname === link.href ? 'var(--accent-gold)' : 'var(--nav-text)',
+                  borderColor: 'rgba(255,255,255,0.06)',
+                  background: pathname === link.href ? 'rgba(245,166,35,0.08)' : undefined,
+                }}
               >
                 {link.label}
               </Link>

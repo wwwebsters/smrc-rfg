@@ -30,12 +30,21 @@ export default function RunnersPage() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-500">Loading runners...</div>;
+    return (
+      <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>
+        Loading runners...
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Runners</h1>
+      <h1
+        className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6"
+        style={{ color: 'var(--text-primary)' }}
+      >
+        Runners
+      </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {runners.map((runner) => {
           const parts = runner.full_name.split(' ');
@@ -46,13 +55,21 @@ export default function RunnersPage() {
             <Link
               key={runner.id}
               href={`/runners/${runner.id}`}
-              className="bg-white rounded-xl shadow hover:shadow-md transition-shadow p-3 sm:p-5 group"
+              className="card p-3 sm:p-5 group"
             >
-              <div className="text-lg font-semibold text-amber-700 group-hover:text-amber-900">
+              <div
+                className="text-lg font-semibold"
+                style={{ color: 'var(--accent-blue)' }}
+              >
                 {display} ({runner.nickname})
               </div>
               {runner.age && (
-                <div className="text-sm text-gray-500 mt-1">Age: {runner.age}</div>
+                <div
+                  className="text-sm mt-1"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  Age: {runner.age}
+                </div>
               )}
             </Link>
           );

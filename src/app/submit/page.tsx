@@ -85,30 +85,28 @@ export default function SubmitRacePage() {
 
   return (
     <div className="max-w-xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Submit a Race Result</h1>
-      <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Submit a Race Result</h1>
+      <p className="text-sm sm:text-base mb-4 sm:mb-6" style={{ color: 'var(--text-secondary)' }}>
         Submit your race and it will be reviewed by an admin before appearing on the leaderboard.
       </p>
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg ${
-          message.type === 'success'
-            ? 'bg-green-50 text-green-800 border border-green-200'
-            : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
+        <div
+          className="mb-6 p-4 rounded-lg text-sm"
+          style={{
+            background: message.type === 'success' ? 'rgba(0,200,117,0.08)' : 'rgba(226,68,92,0.08)',
+            color: message.type === 'success' ? '#00854D' : '#D83A52',
+            border: `1px solid ${message.type === 'success' ? 'rgba(0,200,117,0.25)' : 'rgba(226,68,92,0.25)'}`,
+          }}
+        >
           {message.text}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="card p-5 sm:p-6 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Runner</label>
-          <select
-            required
-            value={form.runnerNickname}
-            onChange={(e) => setForm({ ...form, runnerNickname: e.target.value })}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-          >
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Runner</label>
+          <select required value={form.runnerNickname} onChange={(e) => setForm({ ...form, runnerNickname: e.target.value })} className="input">
             <option value="">Select runner...</option>
             {runners.map((r) => {
               const parts = r.full_name.split(' ');
@@ -125,96 +123,46 @@ export default function SubmitRacePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Race Name</label>
-          <input
-            type="text"
-            required
-            value={form.raceName}
-            onChange={(e) => setForm({ ...form, raceName: e.target.value })}
-            placeholder="e.g., Flying Pig Marathon"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-          />
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Race Name</label>
+          <input type="text" required value={form.raceName} onChange={(e) => setForm({ ...form, raceName: e.target.value })} placeholder="e.g., Flying Pig Marathon" className="input" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Race Date</label>
-          <input
-            type="date"
-            required
-            value={form.raceDate}
-            onChange={(e) => setForm({ ...form, raceDate: e.target.value })}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-          />
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Race Date</label>
+          <input type="date" required value={form.raceDate} onChange={(e) => setForm({ ...form, raceDate: e.target.value })} className="input" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Distance</label>
-          <select
-            required
-            value={form.distance}
-            onChange={(e) => setForm({ ...form, distance: e.target.value })}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-          >
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Distance</label>
+          <select required value={form.distance} onChange={(e) => setForm({ ...form, distance: e.target.value })} className="input">
             <option value="">Select distance...</option>
             {DISTANCES.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
+              <option key={d} value={d}>{d}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Finish Time</label>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Finish Time</label>
           <div className="flex gap-2 items-center">
             <div className="flex-1">
-              <input
-                type="number"
-                min="0"
-                max="99"
-                value={form.hours}
-                onChange={(e) => setForm({ ...form, hours: e.target.value })}
-                placeholder="HH"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              />
-              <div className="text-xs text-gray-400 text-center mt-1">Hours</div>
+              <input type="number" min="0" max="99" value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value })} placeholder="HH" className="input text-center" />
+              <div className="text-xs text-center mt-1" style={{ color: 'var(--text-muted)' }}>Hours</div>
             </div>
-            <span className="text-xl text-gray-400 font-bold">:</span>
+            <span className="text-xl font-bold" style={{ color: 'var(--text-muted)' }}>:</span>
             <div className="flex-1">
-              <input
-                type="number"
-                min="0"
-                max="59"
-                required
-                value={form.minutes}
-                onChange={(e) => setForm({ ...form, minutes: e.target.value })}
-                placeholder="MM"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              />
-              <div className="text-xs text-gray-400 text-center mt-1">Minutes</div>
+              <input type="number" min="0" max="59" required value={form.minutes} onChange={(e) => setForm({ ...form, minutes: e.target.value })} placeholder="MM" className="input text-center" />
+              <div className="text-xs text-center mt-1" style={{ color: 'var(--text-muted)' }}>Minutes</div>
             </div>
-            <span className="text-xl text-gray-400 font-bold">:</span>
+            <span className="text-xl font-bold" style={{ color: 'var(--text-muted)' }}>:</span>
             <div className="flex-1">
-              <input
-                type="number"
-                min="0"
-                max="59"
-                required
-                value={form.seconds}
-                onChange={(e) => setForm({ ...form, seconds: e.target.value })}
-                placeholder="SS"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-900 text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-              />
-              <div className="text-xs text-gray-400 text-center mt-1">Seconds</div>
+              <input type="number" min="0" max="59" required value={form.seconds} onChange={(e) => setForm({ ...form, seconds: e.target.value })} placeholder="SS" className="input text-center" />
+              <div className="text-xs text-center mt-1" style={{ color: 'var(--text-muted)' }}>Seconds</div>
             </div>
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white font-semibold py-3 rounded-lg hover:from-yellow-600 hover:to-amber-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary">
           {submitting ? 'Submitting...' : 'Submit Race Result'}
         </button>
       </form>

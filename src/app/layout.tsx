@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { MobileNav } from "@/components/MobileNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -35,30 +36,31 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
-        <header className="bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 shadow-lg">
+      <body className="min-h-full flex flex-col" style={{ background: 'var(--background)', color: 'var(--text-primary)' }}>
+        <header style={{ background: 'var(--nav-bg)' }}>
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-14 sm:h-16">
-              <Link href="/" className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+              <Link href="/" className="flex items-center gap-3">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight" style={{ color: 'var(--accent-gold)' }}>
                   SMRC
                 </span>
-                <span className="text-sm font-medium text-yellow-100 hidden sm:inline">
+                <span className="text-sm font-medium hidden sm:inline" style={{ color: 'var(--nav-text)' }}>
                   Race for Gold
                 </span>
               </Link>
               {/* Desktop nav */}
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-1">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-yellow-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+                    style={{ color: 'var(--nav-text)' }}
                   >
                     {link.label}
                   </Link>
@@ -72,9 +74,9 @@ export default function RootLayout({
         <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
           {children}
         </main>
-        <footer className="bg-gray-800 text-gray-400 text-center py-3 sm:py-4 text-xs sm:text-sm">
-          <div>SMRC &copy; {new Date().getFullYear()}</div>
-          <div className="italic mt-1">Run all the miles, drink all the beer.</div>
+        <footer style={{ background: 'var(--nav-bg)' }} className="text-center py-3 sm:py-4 text-xs sm:text-sm">
+          <div style={{ color: 'var(--nav-text)' }}>SMRC &copy; {new Date().getFullYear()}</div>
+          <div className="italic mt-1" style={{ color: 'var(--text-muted)' }}>Run all the miles, drink all the beer.</div>
         </footer>
       </body>
     </html>

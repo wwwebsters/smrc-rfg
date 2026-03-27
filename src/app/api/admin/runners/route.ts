@@ -113,6 +113,57 @@ export async function GET() {
   }
 }
 
+export async function PUT(request: Request) {
+  try {
+    const { id, nickname, fullName, birthday } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing runner id' }, { status: 400 });
+    }
+
+    const existing = await dbGet<{ id: number; nickname: string }>(
+      `SELECT id, nickname FROM runners WHERE id = ?`,
+      [id]
+    );
+
+    if (!existing) {
+      return NextResponse.json({ error: 'Runner not found' }, { status: 404 });
+    }
+
+    // Check nickname uniqueness if changed
+    if (nickname && nickname !== existing.nickname) {
+      const dup = await dbGet<{ id: number }>(
+        `SELECT id FROM runners WHERE nickname = ? AND id != ?`,
+        [nickname, id]
+      );
+      if (dup) {
+        return NextResponse.json({ error: `Nickname "${nickname}" is already taken` }, { status: 409 });
+      }
+    }
+
+    let age: number | null = null;
+    if (birthday) {
+      const birth = new Date(birthday);
+      const today = new Date();
+      age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+    }
+
+    await dbRun(
+      `UPDATE runners SET nickname = ?, full_name = ?, birthday = ?, age = ? WHERE id = ?`,
+      [nickname?.trim() || existing.nickname, fullName?.trim(), birthday || null, age, id]
+    );
+
+    return NextResponse.json({ message: 'Runner updated' });
+  } catch (error) {
+    console.error('Update runner error:', error);
+    return NextResponse.json({ error: 'Failed to update runner' }, { status: 500 });
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();

@@ -379,24 +379,11 @@ export default function AdminPage() {
                             />
                           </div>
                         </td>
-                        <td className="px-3 py-2">
-                          <input
-                            type="number" min="0"
-                            value={editForm.points_earned || 0}
-                            onChange={(e) => setEditForm({ ...editForm, points_earned: Number(e.target.value) })}
-                            className="w-14 border border-gray-300 rounded px-2 py-1 text-sm text-center"
-                          />
+                        <td className="px-3 py-2 text-center text-xs italic" style={{ color: 'var(--text-muted)' }}>
+                          Auto
                         </td>
-                        <td className="px-3 py-2">
-                          <select
-                            value={editForm.points_type || ''}
-                            onChange={(e) => setEditForm({ ...editForm, points_type: e.target.value })}
-                            className="border border-gray-300 rounded px-2 py-1 text-sm"
-                          >
-                            {POINTS_TYPES.map((t) => (
-                              <option key={t} value={t}>{t}</option>
-                            ))}
-                          </select>
+                        <td className="px-3 py-2 text-center text-xs italic" style={{ color: 'var(--text-muted)' }}>
+                          Auto
                         </td>
                         <td className="px-3 py-2 text-gray-500 text-sm">
                           {result.submitted_at ? new Date(result.submitted_at).toLocaleDateString() : '--'}
@@ -417,8 +404,6 @@ export default function AdminPage() {
                                       race_date: editForm.race_date,
                                       distance: editForm.distance,
                                       finish_time_seconds: editForm.finish_time_seconds,
-                                      points_earned: editForm.points_earned,
-                                      points_type: editForm.points_type,
                                     }),
                                   });
                                   if (res.ok) {

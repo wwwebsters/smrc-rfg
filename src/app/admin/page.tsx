@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import { formatTime } from '@/lib/format';
 
 interface Submission {
@@ -423,7 +424,11 @@ export default function AdminPage() {
 
                   return (
                     <tr key={result.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                      <td className="px-3 py-2.5 font-medium">{formatRunnerName(result.nickname, runnersMap)}</td>
+                      <td className="px-3 py-2.5 font-medium">
+                        <Link href={`/runners/${result.runner_id}`} className="hover:underline" style={{ color: 'var(--accent-blue)' }}>
+                          {formatRunnerName(result.nickname, runnersMap)}
+                        </Link>
+                      </td>
                       <td className="px-3 py-2.5">{result.race_name}</td>
                       <td className="px-3 py-2.5 text-gray-500">{result.race_date}</td>
                       <td className="px-3 py-2.5 text-gray-500">{result.distance}</td>

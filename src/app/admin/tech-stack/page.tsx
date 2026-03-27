@@ -75,7 +75,7 @@ export default function TechStackPage() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {sections.map((section) => (
-        <div key={section.title} className="card p-4 sm:p-5">
+        <div key={section.title} className="card p-3 sm:p-5">
           <h3 className="font-semibold mb-3" style={{ color: 'var(--accent-blue)' }}>{section.title}</h3>
           <ul className="space-y-1.5">
             {section.items.map((item) => (

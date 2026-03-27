@@ -143,26 +143,26 @@ export default function ManageRunnersPage() {
             <table className="min-w-full text-sm">
               <thead>
                 <tr style={{ background: 'var(--background)', borderBottom: '1px solid var(--card-border)' }}>
-                  <th className="px-4 py-2.5 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Runner</th>
-                  <th className="px-4 py-2.5 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Birthday</th>
-                  <th className="px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Age</th>
-                  <th className="px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Races</th>
-                  <th className="px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Actions</th>
+                  <th className="px-2 sm:px-4 py-2.5 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Runner</th>
+                  <th className="px-2 sm:px-4 py-2.5 text-left font-semibold hidden sm:table-cell" style={{ color: 'var(--text-secondary)' }}>Birthday</th>
+                  <th className="px-2 sm:px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Age</th>
+                  <th className="px-2 sm:px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Races</th>
+                  <th className="px-2 sm:px-4 py-2.5 text-center font-semibold" style={{ color: 'var(--text-secondary)' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {runners.map((runner) => (
                   <tr key={runner.id} className="hover:bg-blue-50/40 transition-colors" style={{ borderBottom: '1px solid var(--card-border)' }}>
-                    <td className="px-4 py-2.5 font-medium">
-                      <Link href={`/runners/${runner.id}`} className="hover:underline" style={{ color: 'var(--accent-blue)' }}>
+                    <td className="px-2 sm:px-4 py-2.5 font-medium">
+                      <Link href={`/runners/${runner.id}`} className="hover:underline text-xs sm:text-sm" style={{ color: 'var(--accent-blue)' }}>
                         {formatRunnerName(runner.nickname, runnersMap)}
                       </Link>
                     </td>
-                    <td className="px-4 py-2.5" style={{ color: 'var(--text-muted)' }}>{runner.birthday || '--'}</td>
-                    <td className="px-4 py-2.5 text-center" style={{ color: 'var(--text-muted)' }}>{runner.age ?? '--'}</td>
-                    <td className="px-4 py-2.5 text-center" style={{ color: 'var(--text-primary)' }}>{runner.race_count}</td>
-                    <td className="px-4 py-2.5 text-center">
-                      <div className="flex gap-2 justify-center">
+                    <td className="px-2 sm:px-4 py-2.5 hidden sm:table-cell" style={{ color: 'var(--text-muted)' }}>{runner.birthday || '--'}</td>
+                    <td className="px-2 sm:px-4 py-2.5 text-center" style={{ color: 'var(--text-muted)' }}>{runner.age ?? '--'}</td>
+                    <td className="px-2 sm:px-4 py-2.5 text-center" style={{ color: 'var(--text-primary)' }}>{runner.race_count}</td>
+                    <td className="px-2 sm:px-4 py-2.5 text-center">
+                      <div className="flex gap-1 sm:gap-2 justify-center">
                         <button onClick={() => handleEdit(runner)} className="px-3 py-1 text-white text-xs font-medium rounded-lg" style={{ background: 'var(--accent-blue)' }}>Edit</button>
                         <button onClick={() => handleDelete(runner)} className="px-3 py-1 text-white text-xs font-medium rounded-lg" style={{ background: '#D83A52' }}>Delete</button>
                       </div>

@@ -44,20 +44,20 @@ export function RunnerFormFields({ form, setForm }: { form: RunnerForm; setForm:
       </div>
 
       <h3 className="font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Personal Records & Targets</h3>
-      <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>Leave blank for distances not yet raced. Times in H:MM:SS or MM:SS format.</p>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
+      <p className="text-xs sm:text-sm mb-3 sm:mb-4" style={{ color: 'var(--text-muted)' }}>Leave blank for distances not yet raced. Times in H:MM:SS or MM:SS format.</p>
+      <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+        <table className="text-sm" style={{ minWidth: '700px' }}>
           <thead>
             <tr style={{ background: 'var(--background)', borderBottom: '1px solid var(--card-border)' }}>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Distance</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>PR</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG PR</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG PR Date</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Age @ PR</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Factor</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>AG Time</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>Today&apos;s Factor</th>
-              <th className="px-3 py-2 text-left font-semibold" style={{ color: 'var(--accent-gold)' }}>Target</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Distance</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>PR</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>AG PR</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Date</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Age</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Factor</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>AG Time</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>T.Factor</th>
+              <th className="px-1.5 sm:px-3 py-2 text-left font-semibold text-xs sm:text-sm" style={{ color: 'var(--accent-gold)' }}>Target</th>
             </tr>
           </thead>
           <tbody>
@@ -65,15 +65,15 @@ export function RunnerFormFields({ form, setForm }: { form: RunnerForm; setForm:
               const prData = form.prs[dist] || { pr: '', agPr: '', agPrDate: '', ageAtAgPr: '', factorAtRace: '', agTime: '', todaysFactor: '', target: '' };
               return (
                 <tr key={dist} style={{ borderBottom: '1px solid var(--card-border)' }}>
-                  <td className="px-3 py-2 font-medium whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>{dist}</td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.pr} onChange={(e) => updatePR(dist, 'pr', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.agPr} onChange={(e) => updatePR(dist, 'agPr', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="date" value={prData.agPrDate} onChange={(e) => updatePR(dist, 'agPrDate', e.target.value)} className="input py-1.5 text-xs" style={{ minWidth: '120px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="number" value={prData.ageAtAgPr} onChange={(e) => updatePR(dist, 'ageAtAgPr', e.target.value)} placeholder="Age" className="input py-1.5 text-xs" style={{ minWidth: '55px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.factorAtRace} onChange={(e) => updatePR(dist, 'factorAtRace', e.target.value)} placeholder="0.0000" className="input py-1.5 text-xs" style={{ minWidth: '70px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.agTime} onChange={(e) => updatePR(dist, 'agTime', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.todaysFactor} onChange={(e) => updatePR(dist, 'todaysFactor', e.target.value)} placeholder="0.0000" className="input py-1.5 text-xs" style={{ minWidth: '70px' }} /></td>
-                  <td className="px-3 py-1.5"><input type="text" value={prData.target} onChange={(e) => updatePR(dist, 'target', e.target.value)} placeholder="MM:SS" className="input py-1.5 text-xs" style={{ minWidth: '80px' }} /></td>
+                  <td className="px-1.5 sm:px-3 py-2 font-medium whitespace-nowrap text-xs sm:text-sm" style={{ color: 'var(--text-primary)' }}>{dist}</td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.pr} onChange={(e) => updatePR(dist, 'pr', e.target.value)} placeholder="MM:SS" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '65px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.agPr} onChange={(e) => updatePR(dist, 'agPr', e.target.value)} placeholder="MM:SS" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '65px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="date" value={prData.agPrDate} onChange={(e) => updatePR(dist, 'agPrDate', e.target.value)} className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '100px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="number" value={prData.ageAtAgPr} onChange={(e) => updatePR(dist, 'ageAtAgPr', e.target.value)} placeholder="Age" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '45px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.factorAtRace} onChange={(e) => updatePR(dist, 'factorAtRace', e.target.value)} placeholder="0.0000" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '60px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.agTime} onChange={(e) => updatePR(dist, 'agTime', e.target.value)} placeholder="MM:SS" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '65px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.todaysFactor} onChange={(e) => updatePR(dist, 'todaysFactor', e.target.value)} placeholder="0.0000" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '60px' }} /></td>
+                  <td className="px-1 sm:px-3 py-1"><input type="text" value={prData.target} onChange={(e) => updatePR(dist, 'target', e.target.value)} placeholder="MM:SS" className="input py-1 sm:py-1.5 text-xs" style={{ minWidth: '65px' }} /></td>
                 </tr>
               );
             })}

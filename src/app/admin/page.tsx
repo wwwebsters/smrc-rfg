@@ -90,7 +90,7 @@ export default function PendingSubmissionsPage() {
                   <button
                     onClick={() => handleReview(sub.id, 'approve')}
                     disabled={processing === sub.id}
-                    className="px-4 py-2 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-medium rounded-lg disabled:opacity-50 transition-colors"
                     style={{ background: '#00854D' }}
                   >
                     {processing === sub.id ? '...' : 'Approve'}
@@ -98,7 +98,7 @@ export default function PendingSubmissionsPage() {
                   <button
                     onClick={() => handleReview(sub.id, 'reject')}
                     disabled={processing === sub.id}
-                    className="px-4 py-2 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-medium rounded-lg disabled:opacity-50 transition-colors"
                     style={{ background: '#D83A52' }}
                   >
                     Reject

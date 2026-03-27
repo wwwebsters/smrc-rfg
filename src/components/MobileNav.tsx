@@ -17,8 +17,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
     <div className="md:hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-lg transition-colors hover:bg-white/10"
-        style={{ color: 'var(--nav-text)' }}
+        className="p-2 rounded-lg transition-colors hover:bg-white/10 text-white"
         aria-label="Toggle menu"
       >
         {open ? (

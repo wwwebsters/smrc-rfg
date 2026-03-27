@@ -49,7 +49,7 @@ export default function RootLayout({
                 <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
                   SMRC
                 </span>
-                <span className="text-base font-medium hidden sm:inline" style={{ color: 'var(--nav-text)' }}>
+                <span className="text-base font-medium hidden sm:inline text-white">
                   Race for Gold
                 </span>
               </Link>
@@ -59,8 +59,7 @@ export default function RootLayout({
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
-                    style={{ color: 'var(--nav-text)' }}
+                    className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10 text-white"
                   >
                     {link.label}
                   </Link>

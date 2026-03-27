@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
 
   // Admin page and admin action APIs require additional admin auth
   const isAdminPage = pathname === '/admin';
-  const isAdminActionApi = pathname === '/api/admin/review' || pathname === '/api/admin/upload' || pathname === '/api/admin/results';
+  const isAdminActionApi = pathname === '/api/admin/review' || pathname === '/api/admin/upload' || pathname === '/api/admin/results' || pathname === '/api/admin/runners';
 
   if (isAdminPage || isAdminActionApi) {
     const adminCookie = request.cookies.get('admin-auth');

@@ -59,6 +59,9 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<ApprovedResult>>({});
   const [saving, setSaving] = useState(false);
+  const [newRunner, setNewRunner] = useState({ nickname: '', fullName: '', birthday: '' });
+  const [addRunnerMsg, setAddRunnerMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [addingRunner, setAddingRunner] = useState(false);
 
   const fetchApprovedResults = useCallback(() => {
     fetch('/api/admin/results')
@@ -225,6 +228,94 @@ export default function AdminPage() {
               : 'bg-red-50 text-red-800 border border-red-200'
           }`}>
             {uploadMessage.text}
+          </div>
+        )}
+      </section>
+
+      {/* Add Runner */}
+      <section className="card p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4" style={{ color: 'var(--text-primary)' }}>Add Runner</h2>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setAddRunnerMsg(null);
+            setAddingRunner(true);
+            try {
+              const res = await fetch('/api/admin/runners', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newRunner),
+              });
+              const data = await res.json();
+              if (res.ok) {
+                setAddRunnerMsg({ type: 'success', text: data.message });
+                setNewRunner({ nickname: '', fullName: '', birthday: '' });
+                // Refresh runners map
+                fetch('/api/runners').then(r => r.json()).then((data: { nickname: string; full_name: string }[]) => {
+                  const map: Record<string, string> = {};
+                  data.forEach((r) => { map[r.nickname] = r.full_name; });
+                  setRunnersMap(map);
+                });
+              } else {
+                setAddRunnerMsg({ type: 'error', text: data.error || 'Failed to add runner' });
+              }
+            } catch {
+              setAddRunnerMsg({ type: 'error', text: 'Network error' });
+            } finally {
+              setAddingRunner(false);
+            }
+          }}
+          className="flex flex-col sm:flex-row gap-3 items-end"
+        >
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Nickname</label>
+            <input
+              type="text"
+              required
+              value={newRunner.nickname}
+              onChange={(e) => setNewRunner({ ...newRunner, nickname: e.target.value })}
+              placeholder="e.g., Speedy"
+              className="input"
+            />
+          </div>
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Full Name</label>
+            <input
+              type="text"
+              required
+              value={newRunner.fullName}
+              onChange={(e) => setNewRunner({ ...newRunner, fullName: e.target.value })}
+              placeholder="e.g., John Smith"
+              className="input"
+            />
+          </div>
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Birthday</label>
+            <input
+              type="date"
+              value={newRunner.birthday}
+              onChange={(e) => setNewRunner({ ...newRunner, birthday: e.target.value })}
+              className="input"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={addingRunner}
+            className="btn-primary sm:w-auto px-6 whitespace-nowrap"
+          >
+            {addingRunner ? 'Adding...' : 'Add Runner'}
+          </button>
+        </form>
+        {addRunnerMsg && (
+          <div
+            className="mt-3 p-3 rounded-lg text-sm"
+            style={{
+              background: addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.08)' : 'rgba(226,68,92,0.08)',
+              color: addRunnerMsg.type === 'success' ? '#00854D' : '#D83A52',
+              border: `1px solid ${addRunnerMsg.type === 'success' ? 'rgba(0,200,117,0.25)' : 'rgba(226,68,92,0.25)'}`,
+            }}
+          >
+            {addRunnerMsg.text}
           </div>
         )}
       </section>

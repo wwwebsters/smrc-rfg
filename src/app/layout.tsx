@@ -75,7 +75,7 @@ export default function RootLayout({
         </main>
         <footer style={{ background: 'var(--nav-bg)' }} className="text-center py-3 sm:py-4 text-xs sm:text-sm text-white">
           <div>SMRC &copy; {new Date().getFullYear()}</div>
-          <div className="italic mt-1">Run all the miles, drink all the beer.</div>
+          <div className="italic mt-1">Run all the miles, drink all the beer.&trade;</div>
         </footer>
       </body>
     </html>

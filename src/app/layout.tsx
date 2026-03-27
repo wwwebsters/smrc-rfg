@@ -3,6 +3,7 @@ import { Poppins, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { MobileNav } from "@/components/MobileNav";
+import { Logo } from "@/components/Logo";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -45,13 +46,8 @@ export default function RootLayout({
         <header style={{ background: 'var(--nav-bg)' }}>
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-14 sm:h-16">
-              <Link href="/" className="flex items-center gap-3">
-                <span className="text-xl sm:text-2xl font-bold tracking-tight" style={{ color: 'var(--accent-gold)' }}>
-                  SMRC
-                </span>
-                <span className="text-sm font-medium hidden sm:inline" style={{ color: 'var(--nav-text)' }}>
-                  Race for Gold
-                </span>
+              <Link href="/" className="flex items-center gap-2">
+                <Logo className="h-10 sm:h-12 w-auto" />
               </Link>
               {/* Desktop nav */}
               <div className="hidden md:flex items-center gap-1">

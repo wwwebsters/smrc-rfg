@@ -46,10 +46,10 @@ export default function RootLayout({
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-14 sm:h-16">
               <Link href="/" className="flex items-center gap-3">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
                   SMRC
                 </span>
-                <span className="text-sm font-medium hidden sm:inline" style={{ color: 'var(--nav-text)' }}>
+                <span className="text-base font-medium hidden sm:inline" style={{ color: 'var(--nav-text)' }}>
                   Race for Gold
                 </span>
               </Link>

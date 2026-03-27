@@ -129,7 +129,7 @@ export default function SubmitRacePage() {
 
         <div>
           <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-secondary)' }}>Race Date</label>
-          <input type="date" required value={form.raceDate} onChange={(e) => setForm({ ...form, raceDate: e.target.value })} className="input" />
+          <input type="date" required max={new Date().toISOString().split('T')[0]} value={form.raceDate} onChange={(e) => setForm({ ...form, raceDate: e.target.value })} className="input" />
         </div>
 
         <div>

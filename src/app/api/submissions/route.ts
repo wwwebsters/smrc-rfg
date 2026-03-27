@@ -63,6 +63,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const today = new Date().toISOString().split('T')[0];
+    if (raceDate > today) {
+      return NextResponse.json(
+        { error: 'Race date cannot be in the future' },
+        { status: 400 }
+      );
+    }
+
     const result = await dbRun(
       `INSERT INTO pending_submissions (runner_nickname, race_name, race_date, distance, finish_time_seconds, status)
        VALUES (?, ?, ?, ?, ?, 'pending')`,

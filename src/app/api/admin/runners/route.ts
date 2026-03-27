@@ -115,7 +115,7 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const { id, nickname, fullName, birthday } = await request.json();
+    const { id, nickname, fullName, birthday, prs } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: 'Missing runner id' }, { status: 400 });
@@ -156,6 +156,44 @@ export async function PUT(request: Request) {
       `UPDATE runners SET nickname = ?, full_name = ?, birthday = ?, age = ? WHERE id = ?`,
       [nickname?.trim() || existing.nickname, fullName?.trim(), birthday || null, age, id]
     );
+
+    // Update PRs if provided
+    if (prs && typeof prs === 'object') {
+      // Delete existing PRs and re-insert
+      await dbRun('DELETE FROM runner_prs WHERE runner_id = ?', [id]);
+
+      const statements: { sql: string; args: (string | number | null)[] }[] = [];
+      for (const [dist, prData] of Object.entries(prs)) {
+        const d = prData as Record<string, string>;
+        const hasData = d.pr || d.agPr || d.agPrDate || d.ageAtAgPr || d.factorAtRace || d.agTime || d.todaysFactor || d.target;
+        if (!hasData) continue;
+
+        const dbDist = DIST_TO_DB[dist] || dist;
+        const prTime = parseTime(d.pr);
+        const agPrTime = parseTime(d.agPr);
+        const agTime = parseTime(d.agTime);
+        const targetTime = parseTime(d.target);
+        const factorAtRace = d.factorAtRace ? parseFloat(d.factorAtRace) : null;
+        const todaysFactor = d.todaysFactor ? parseFloat(d.todaysFactor) : null;
+        const ageAtAgPr = d.ageAtAgPr ? parseInt(d.ageAtAgPr) : null;
+
+        statements.push({
+          sql: `INSERT INTO runner_prs (runner_id, distance, pr_time_seconds, ag_pr_time_seconds, ag_pr_date,
+                age_at_ag_pr, factor_at_race, ag_time_seconds, todays_factor, target_seconds)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          args: [
+            id, dbDist, prTime, agPrTime, d.agPrDate || null,
+            ageAtAgPr, isNaN(factorAtRace as number) ? null : factorAtRace,
+            agTime, isNaN(todaysFactor as number) ? null : todaysFactor, targetTime
+          ],
+        });
+      }
+
+      if (statements.length > 0) {
+        const db = getDb();
+        await db.batch(statements, 'write');
+      }
+    }
 
     return NextResponse.json({ message: 'Runner updated' });
   } catch (error) {

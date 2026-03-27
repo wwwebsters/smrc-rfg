@@ -10,6 +10,7 @@ const adminLinks = [
   { href: '/admin/runners', label: 'Manage Runners' },
   { href: '/admin/add-runner', label: 'Add Runner' },
   { href: '/admin/upload', label: 'Upload Data' },
+  { href: '/admin/tech-stack', label: 'Tech Stack' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

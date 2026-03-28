@@ -7,7 +7,7 @@ export default function HallOfFamePage() {
   const winners = [
     {
       rank: 1,
-      name: 'Logan',
+      name: 'Logan Holmes',
       points: 65,
       races: 7,
       efficiency: 9.29,
@@ -23,7 +23,7 @@ export default function HallOfFamePage() {
     },
     {
       rank: 2,
-      name: 'C-Rich',
+      name: 'Cindy Richmond',
       points: 53,
       races: 9,
       efficiency: 5.89,
@@ -39,7 +39,7 @@ export default function HallOfFamePage() {
     },
     {
       rank: 3,
-      name: 'MG',
+      name: 'Kenji Heilman',
       points: 43,
       races: 9,
       efficiency: 4.78,
@@ -83,21 +83,21 @@ export default function HallOfFamePage() {
           <div className="flex items-start gap-3">
             <span className="text-xl mt-0.5" style={{ color: 'var(--accent-gold)' }}>*</span>
             <p>
-              <strong style={{ color: 'var(--text-primary)' }}>Logan</strong> dominated the season with an incredible
+              <strong style={{ color: 'var(--text-primary)' }}>Logan Holmes</strong> dominated the season with an incredible
               9.29 points-per-race efficiency across 7 races, racking up 65 total points to claim gold.
             </p>
           </div>
           <div className="flex items-start gap-3">
             <span className="text-xl mt-0.5" style={{ color: 'var(--text-muted)' }}>*</span>
             <p>
-              <strong style={{ color: 'var(--text-primary)' }}>C-Rich</strong> earned silver through sheer consistency,
+              <strong style={{ color: 'var(--text-primary)' }}>Cindy Richmond</strong> earned silver through sheer consistency,
               competing in 9 races and accumulating 53 points including a 16-point race.
             </p>
           </div>
           <div className="flex items-start gap-3">
             <span className="text-xl mt-0.5" style={{ color: '#CD7F32' }}>*</span>
             <p>
-              <strong style={{ color: 'var(--text-primary)' }}>MG</strong> captured bronze with 43 points across
+              <strong style={{ color: 'var(--text-primary)' }}>Kenji Heilman</strong> captured bronze with 43 points across
               9 races, including a strong 12-point PR performance.
             </p>
           </div>

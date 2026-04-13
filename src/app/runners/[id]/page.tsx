@@ -131,7 +131,11 @@ export default function RunnerDetailPage({
               {runner.races.reduce((sum, r) => sum + r.points_earned, 0)} pts
             </span>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto relative group">
+            {/* Scroll hint for mobile - fades out on scroll */}
+            <div className="sm:hidden absolute right-0 top-0 bottom-0 w-12 pointer-events-none bg-gradient-to-l from-white to-transparent z-10 flex items-center justify-end pr-1">
+              <span className="text-xs animate-pulse" style={{ color: 'var(--text-muted)' }}>→</span>
+            </div>
             <table className="min-w-full text-sm">
               <thead>
                 <tr style={{ background: 'var(--background)', borderBottom: '1px solid var(--card-border)' }}>

@@ -18,31 +18,36 @@ export default function RFGLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      {/* RFG Sub-navigation */}
-      <div className="flex items-center justify-between mb-4 sm:mb-6" style={{ borderBottom: '1px solid var(--card-border)', paddingBottom: '12px' }}>
-        <div className="flex items-center gap-2">
-          <span className="text-lg sm:text-xl font-bold" style={{ color: 'var(--accent-blue)' }}>
-            Race for Gold
-          </span>
-        </div>
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-[var(--accent-blue)] hover:text-white"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              {link.label}
+    <>
+      {/* RFG navigation bar - replaces the minimal root header */}
+      <div style={{ background: 'var(--nav-bg)', marginTop: '-1rem', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12 sm:h-14">
+            <Link href="/rfg" className="flex items-center gap-2">
+              <span className="text-base sm:text-lg font-semibold text-white">
+                Race for Gold
+              </span>
             </Link>
-          ))}
-        </div>
-        {/* Mobile nav */}
-        <MobileNav links={navLinks} />
+            {/* Desktop nav */}
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10 text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            {/* Mobile nav */}
+            <MobileNav links={navLinks} />
+          </div>
+        </nav>
       </div>
-      {children}
-    </div>
+      <div className="mt-4 sm:mt-6">
+        {children}
+      </div>
+    </>
   );
 }

@@ -6,12 +6,12 @@ import { usePathname } from 'next/navigation';
 import { AdminAuthProvider } from '@/components/AdminAuth';
 
 const adminLinks = [
-  { href: '/admin', label: 'Pending Submissions' },
-  { href: '/admin/results', label: 'Approved Results' },
-  { href: '/admin/runners', label: 'Manage Runners' },
-  { href: '/admin/add-runner', label: 'Add Runner' },
-  { href: '/admin/upload', label: 'Upload Data' },
-  { href: '/admin/tech-stack', label: 'Tech Stack' },
+  { href: '/rfg/admin', label: 'Pending Submissions' },
+  { href: '/rfg/admin/results', label: 'Approved Results' },
+  { href: '/rfg/admin/runners', label: 'Manage Runners' },
+  { href: '/rfg/admin/add-runner', label: 'Add Runner' },
+  { href: '/rfg/admin/upload', label: 'Upload Data' },
+  { href: '/rfg/admin/tech-stack', label: 'Tech Stack' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

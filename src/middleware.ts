@@ -3,23 +3,29 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow the login page and auth APIs through
+  // Allow the landing page, login page, and auth APIs through
   if (
-    pathname === '/login' ||
+    pathname === '/' ||
+    pathname === '/rfg/login' ||
     pathname === '/api/auth' ||
     pathname === '/api/admin/auth'
   ) {
     return NextResponse.next();
   }
 
+  // Only protect /rfg routes and /api routes
+  if (!pathname.startsWith('/rfg') && !pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   // Check for site auth cookie
   const authCookie = request.cookies.get('site-auth');
   if (authCookie?.value !== 'authenticated') {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/rfg/login', request.url));
   }
 
   // Admin pages and admin APIs require additional admin auth
-  const isAdminPage = pathname.startsWith('/admin');
+  const isAdminPage = pathname.startsWith('/rfg/admin');
   const isAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
   if (isAdminPage || isAdminApi) {

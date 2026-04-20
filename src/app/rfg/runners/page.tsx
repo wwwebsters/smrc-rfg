@@ -54,7 +54,7 @@ export default function RunnersPage() {
           return (
             <Link
               key={runner.id}
-              href={`/runners/${runner.id}`}
+              href={`/rfg/runners/${runner.id}`}
               className="card p-3 sm:p-5 group"
             >
               <div

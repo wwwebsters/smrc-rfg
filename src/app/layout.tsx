@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-import { MobileNav } from "@/components/MobileNav";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -16,17 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SMRC - Race for Gold",
-  description: "South Mason Running Club - Race for Gold Competition",
+  title: "SMRC",
+  description: "South Mason Running Club",
 };
-
-const navLinks = [
-  { href: "/", label: "Leaderboard" },
-  { href: "/submit", label: "Submit Race" },
-  { href: "/runners", label: "Runners" },
-  { href: "/hall-of-fame", label: "2025 Results" },
-  { href: "/admin", label: "Admin" },
-];
 
 export default function RootLayout({
   children,
@@ -49,24 +40,7 @@ export default function RootLayout({
                 <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
                   SMRC
                 </span>
-                <span className="text-base font-medium hidden sm:inline text-white">
-                  Race for Gold
-                </span>
               </Link>
-              {/* Desktop nav */}
-              <div className="hidden md:flex items-center gap-1">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/10 text-white"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-              {/* Mobile nav */}
-              <MobileNav links={navLinks} />
             </div>
           </nav>
         </header>

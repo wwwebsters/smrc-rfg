@@ -162,7 +162,7 @@ export default function ApprovedResultsPage() {
                 return (
                   <tr key={result.id} className="hover:bg-blue-50/40 transition-colors" style={{ borderBottom: '1px solid var(--card-border)' }}>
                     <td className="px-3 py-2.5 font-medium">
-                      <Link href={`/runners/${result.runner_id}`} className="hover:underline" style={{ color: 'var(--accent-blue)' }}>
+                      <Link href={`/rfg/runners/${result.runner_id}`} className="hover:underline" style={{ color: 'var(--accent-blue)' }}>
                         {formatRunnerName(result.nickname, runnersMap)}
                       </Link>
                     </td>

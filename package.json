@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run tests/api.test.ts",
-    "test:watch": "vitest tests/api.test.ts"
+    "test:watch": "vitest tests/api.test.ts",
+    "snapshot": "npx tsx scripts/snapshot.ts",
+    "restore": "npx tsx scripts/restore.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.2",

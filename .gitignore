@@ -43,3 +43,6 @@ next-env.d.ts
 # data - rebuild from seed script
 /data/
 *.xlsx
+
+# database backups (contain personal data)
+/backups/

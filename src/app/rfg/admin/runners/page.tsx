@@ -154,7 +154,7 @@ export default function ManageRunnersPage() {
                 {runners.map((runner) => (
                   <tr key={runner.id} className="hover:bg-blue-50/40 transition-colors" style={{ borderBottom: '1px solid var(--card-border)' }}>
                     <td className="px-2 sm:px-4 py-2.5 font-medium">
-                      <Link href={`/runners/${runner.id}`} className="hover:underline text-xs sm:text-sm" style={{ color: 'var(--accent-blue)' }}>
+                      <Link href={`/rfg/runners/${runner.id}`} className="hover:underline text-xs sm:text-sm" style={{ color: 'var(--accent-blue)' }}>
                         {formatRunnerName(runner.nickname, runnersMap)}
                       </Link>
                     </td>

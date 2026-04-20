@@ -19,12 +19,14 @@ export default function RFGLayout({
 }) {
   return (
     <>
-      {/* RFG navigation bar - replaces the minimal root header */}
-      <div style={{ background: 'var(--nav-bg)', marginTop: '-1rem', marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
+      <header style={{ background: 'var(--nav-bg)' }}>
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12 sm:h-14">
-            <Link href="/rfg" className="flex items-center gap-2">
-              <span className="text-base sm:text-lg font-semibold text-white">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <Link href="/rfg" className="flex items-center gap-3">
+              <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                SMRC
+              </span>
+              <span className="text-base font-medium hidden sm:inline text-white">
                 Race for Gold
               </span>
             </Link>
@@ -44,10 +46,10 @@ export default function RFGLayout({
             <MobileNav links={navLinks} />
           </div>
         </nav>
-      </div>
-      <div className="mt-4 sm:mt-6">
+      </header>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         {children}
-      </div>
+      </main>
     </>
   );
 }

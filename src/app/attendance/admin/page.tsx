@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AdminAuth } from '@/components/AdminAuth';
+import { AdminAuthProvider } from '@/components/AdminAuth';
 
 interface Week {
   id: number;
@@ -47,14 +47,14 @@ export default function AttendanceAdminPage() {
 
   if (loading) {
     return (
-      <AdminAuth>
+      <AdminAuthProvider>
         <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>Loading weeks...</div>
-      </AdminAuth>
+      </AdminAuthProvider>
     );
   }
 
   return (
-    <AdminAuth>
+    <AdminAuthProvider>
       <div>
         <div className="mb-6 flex justify-between items-center">
           <div>
@@ -112,6 +112,6 @@ export default function AttendanceAdminPage() {
           </table>
         </div>
       </div>
-    </AdminAuth>
+    </AdminAuthProvider>
   );
 }

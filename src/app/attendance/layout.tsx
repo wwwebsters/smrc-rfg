@@ -58,7 +58,7 @@ export default function AttendanceLayout({
                 </Link>
               ))}
             </div>
-            <MobileNav items={[...navItems, ...adminNavItems]} />
+            <MobileNav links={[...navItems, ...adminNavItems]} />
           </div>
         </nav>
       </header>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import { AdminAuth } from '@/components/AdminAuth';
+import { AdminAuthProvider } from '@/components/AdminAuth';
 
 interface Week {
   id: number;
@@ -87,16 +87,16 @@ export default function EditAttendanceWeekPage({
 
   if (loading || !data) {
     return (
-      <AdminAuth>
+      <AdminAuthProvider>
         <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>Loading week...</div>
-      </AdminAuth>
+      </AdminAuthProvider>
     );
   }
 
   const presentCount = Array.from(records.values()).filter(Boolean).length;
 
   return (
-    <AdminAuth>
+    <AdminAuthProvider>
       <div>
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
@@ -178,6 +178,6 @@ export default function EditAttendanceWeekPage({
           )}
         </div>
       </div>
-    </AdminAuth>
+    </AdminAuthProvider>
   );
 }

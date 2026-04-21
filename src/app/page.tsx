@@ -38,17 +38,18 @@ export default function HomePage() {
                 </p>
               </Link>
 
-              <div
-                className="card p-8 text-center opacity-50 cursor-not-allowed"
+              <Link
+                href="/attendance"
+                className="card p-8 text-center hover:shadow-lg transition-all group"
               >
                 <div className="text-3xl mb-3">📋</div>
-                <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                <h2 className="text-xl font-bold mb-1 group-hover:text-[var(--accent-blue)] transition-colors" style={{ color: 'var(--text-primary)' }}>
                   2026 Attendance
                 </h2>
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                  Coming soon
+                  Saturday run tracking
                 </p>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

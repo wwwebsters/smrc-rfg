@@ -13,8 +13,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Only protect /rfg routes and /api routes
-  if (!pathname.startsWith('/rfg') && !pathname.startsWith('/api')) {
+  // Only protect /rfg, /attendance and /api routes
+  if (!pathname.startsWith('/rfg') && !pathname.startsWith('/attendance') && !pathname.startsWith('/api')) {
     return NextResponse.next();
   }
 
@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Admin pages and admin APIs require additional admin auth
-  const isAdminPage = pathname.startsWith('/rfg/admin');
+  const isAdminPage = pathname.startsWith('/rfg/admin') || pathname.startsWith('/attendance/admin');
   const isAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
   if (isAdminPage || isAdminApi) {

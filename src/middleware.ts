@@ -3,9 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow the landing page, login page, and auth APIs through
+  // Allow the login page and auth APIs through (no auth required)
   if (
-    pathname === '/' ||
     pathname === '/rfg/login' ||
     pathname === '/api/auth' ||
     pathname === '/api/admin/auth'
@@ -13,19 +12,20 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Only protect /rfg, /attendance and /api routes
-  if (!pathname.startsWith('/rfg') && !pathname.startsWith('/attendance') && !pathname.startsWith('/api')) {
+  // Protect landing page, /rfg, /attendance and /api routes with site auth
+  if (pathname === '/' || pathname.startsWith('/rfg') || pathname.startsWith('/attendance') || pathname.startsWith('/api')) {
+    // Check for site auth cookie
+    const authCookie = request.cookies.get('site-auth');
+    if (authCookie?.value !== 'authenticated') {
+      return NextResponse.redirect(new URL('/rfg/login', request.url));
+    }
+  } else {
     return NextResponse.next();
   }
 
-  // Check for site auth cookie
-  const authCookie = request.cookies.get('site-auth');
-  if (authCookie?.value !== 'authenticated') {
-    return NextResponse.redirect(new URL('/rfg/login', request.url));
-  }
-
   // Admin pages and admin APIs require additional admin auth
-  const isAdminPage = pathname.startsWith('/rfg/admin') || pathname.startsWith('/attendance/admin');
+  // Also require admin auth for main attendance pages while we work through issues
+  const isAdminPage = pathname.startsWith('/rfg/admin') || pathname.startsWith('/attendance');
   const isAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
   if (isAdminPage || isAdminApi) {

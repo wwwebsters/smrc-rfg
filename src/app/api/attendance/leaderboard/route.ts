@@ -8,6 +8,7 @@ interface LeaderboardEntry {
   total_2026: number;
   attendance_pct: number;
   current_streak: number;
+  total_2025_same_weeks: number;
   total_2025: number;
   total_2024: number;
   total_2023: number;
@@ -22,6 +23,7 @@ export async function GET() {
     const totalWeeks2026 = weeksResult[0]?.cnt || 1;
 
     // Get leaderboard with totals per year, attendance %, and streaks
+    // For YoY comparison, compare against same number of weeks in previous year
     const leaderboard = await dbAll<LeaderboardEntry>(`
       SELECT
         ar.id as runner_id,
@@ -30,6 +32,7 @@ export async function GET() {
         COALESCE(SUM(CASE WHEN aw.timmy_year = 2026 AND rec.present = 1 THEN 1 ELSE 0 END), 0) as total_2026,
         ROUND(COALESCE(SUM(CASE WHEN aw.timmy_year = 2026 AND rec.present = 1 THEN 1 ELSE 0 END), 0) * 100.0 / ?, 1) as attendance_pct,
         0 as current_streak,
+        COALESCE(SUM(CASE WHEN aw.timmy_year = 2025 AND aw.week_number <= ? AND rec.present = 1 THEN 1 ELSE 0 END), 0) as total_2025_same_weeks,
         COALESCE(SUM(CASE WHEN aw.timmy_year = 2025 AND rec.present = 1 THEN 1 ELSE 0 END), 0) as total_2025,
         COALESCE(SUM(CASE WHEN aw.timmy_year = 2024 AND rec.present = 1 THEN 1 ELSE 0 END), 0) as total_2024,
         COALESCE(SUM(CASE WHEN aw.timmy_year = 2023 AND rec.present = 1 THEN 1 ELSE 0 END), 0) as total_2023
@@ -39,7 +42,7 @@ export async function GET() {
       GROUP BY ar.id, ar.nickname, ar.full_name
       HAVING total_2026 > 0
       ORDER BY total_2026 DESC, ar.nickname ASC
-    `, [totalWeeks2026]);
+    `, [totalWeeks2026, totalWeeks2026]);
 
     // Calculate streaks for each runner
     for (const runner of leaderboard) {

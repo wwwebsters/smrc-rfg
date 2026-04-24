@@ -10,6 +10,7 @@ interface LeaderboardEntry {
   total_2026: number;
   attendance_pct: number;
   current_streak: number;
+  total_2025_same_weeks: number;
   total_2025: number;
   total_2024: number;
   total_2023: number;
@@ -123,7 +124,7 @@ export default function AttendanceLeaderboardPage() {
               <div className="text-right">
                 <div className="text-xl font-bold" style={{ color: 'var(--accent-gold)' }}>{entry.total_2026}</div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  vs &apos;25: <YoYChange current={entry.total_2026} previous={entry.total_2025} />
+                  vs &apos;25: <YoYChange current={entry.total_2026} previous={entry.total_2025_same_weeks} />
                 </div>
               </div>
             </div>
@@ -141,10 +142,10 @@ export default function AttendanceLeaderboardPage() {
               <th className="px-3 py-3 text-center font-semibold text-white">2026</th>
               <th className="px-3 py-3 text-center font-semibold text-white">%</th>
               <th className="px-3 py-3 text-center font-semibold text-white">Streak</th>
-              <th className="px-3 py-3 text-center font-semibold text-white">2025</th>
+              <th className="px-3 py-3 text-center font-semibold text-white" title="Same number of weeks as current year">&#39;25 (wk 1-19)</th>
               <th className="px-3 py-3 text-center font-semibold text-white">YoY</th>
-              <th className="px-3 py-3 text-center font-semibold text-white">2024</th>
-              <th className="px-3 py-3 text-center font-semibold text-white">2023</th>
+              <th className="px-3 py-3 text-center font-semibold text-white" title="Full year">&#39;24</th>
+              <th className="px-3 py-3 text-center font-semibold text-white" title="Full year">&#39;23</th>
             </tr>
           </thead>
           <tbody>
@@ -176,10 +177,10 @@ export default function AttendanceLeaderboardPage() {
                   <StreakBadge streak={entry.current_streak} />
                 </td>
                 <td className="px-3 py-2.5 text-center" style={{ color: 'var(--text-muted)' }}>
-                  {entry.total_2025}
+                  {entry.total_2025_same_weeks}
                 </td>
                 <td className="px-3 py-2.5 text-center">
-                  <YoYChange current={entry.total_2026} previous={entry.total_2025} />
+                  <YoYChange current={entry.total_2026} previous={entry.total_2025_same_weeks} />
                 </td>
                 <td className="px-3 py-2.5 text-center" style={{ color: 'var(--text-muted)' }}>
                   {entry.total_2024}

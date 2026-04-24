@@ -88,8 +88,8 @@ export default function AttendanceLeaderboardPage() {
 
   return (
     <div>
-      <div className="mb-6 -mx-4 sm:-mx-6 -mt-4 px-4 sm:px-6 py-4" style={{ background: 'var(--nav-bg)' }}>
-        <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'white' }}>
+      <div className="mb-6 -mx-3 sm:-mx-6 -mt-4 px-3 sm:px-6 py-4" style={{ background: 'var(--nav-bg)', color: '#FFFFFF' }}>
+        <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#FFFFFF' }}>
           2026 Attendance Leaderboard
         </h1>
         <p className="text-sm sm:text-base mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>

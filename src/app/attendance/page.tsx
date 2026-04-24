@@ -88,11 +88,11 @@ export default function AttendanceLeaderboardPage() {
 
   return (
     <div>
-      <div className="mb-6 -mx-3 sm:-mx-6 -mt-4 px-3 sm:px-6 py-4" style={{ background: 'var(--nav-bg)', color: '#FFFFFF' }}>
-        <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: '#FFFFFF' }}>
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
           2026 Attendance Leaderboard
         </h1>
-        <p className="text-sm sm:text-base mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>
+        <p className="text-sm sm:text-base mt-1" style={{ color: 'var(--text-secondary)' }}>
           Saturday runs this season ({data.totalWeeks} weeks so far)
         </p>
       </div>

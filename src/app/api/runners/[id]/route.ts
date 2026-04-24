@@ -103,7 +103,19 @@ export async function GET(
       [Number(id)]
     );
 
-    return NextResponse.json({ ...runner, age: currentAge, prs: updatedPRs, races });
+    // Check for linked attendance runner
+    const attendanceRunner = await dbGet<{ id: number }>(
+      `SELECT id FROM attendance_runners WHERE rfg_runner_id = ?`,
+      [Number(id)]
+    );
+
+    return NextResponse.json({
+      ...runner,
+      age: currentAge,
+      prs: updatedPRs,
+      races,
+      attendance_runner_id: attendanceRunner?.id || null,
+    });
   } catch (error) {
     console.error('Runner detail error:', error);
     return NextResponse.json({ error: 'Failed to fetch runner' }, { status: 500 });

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { use } from 'react';
+import Link from 'next/link';
 import { formatTime } from '@/lib/format';
 
 interface PR {
@@ -35,6 +36,7 @@ interface RunnerDetail {
   age: number | null;
   prs: PR[];
   races: Race[];
+  attendance_runner_id?: number | null;
 }
 
 const DISTANCE_DISPLAY: Record<string, string> = {
@@ -120,6 +122,15 @@ export default function RunnerDetailPage({
           {runner.age && <span>Age: {runner.age}</span>}
           {runner.birthday && <span>Born: {runner.birthday}</span>}
         </div>
+        {runner.attendance_runner_id && (
+          <Link
+            href={`/attendance/runners/${runner.attendance_runner_id}`}
+            className="inline-flex items-center gap-1 mt-2 text-sm font-medium hover:underline"
+            style={{ color: 'var(--accent-blue)' }}
+          >
+            View Attendance Profile <span>&rarr;</span>
+          </Link>
+        )}
       </div>
 
       {/* Race History */}

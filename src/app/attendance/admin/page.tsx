@@ -83,9 +83,9 @@ function RSVPQueue({ rsvps, onAction }: { rsvps: RSVP[]; onAction: (action: stri
   };
 
   return (
-    <div className="card mb-6">
-      <div className="px-4 py-3 flex justify-between items-center" style={{ borderBottom: '1px solid var(--card-border)' }}>
-        <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+    <div className="card mb-6 overflow-hidden">
+      <div className="px-4 py-3 flex justify-between items-center" style={{ background: 'var(--nav-bg)' }}>
+        <h2 className="text-lg font-bold text-white">
           Pending RSVPs
         </h2>
         <div className="flex gap-2">

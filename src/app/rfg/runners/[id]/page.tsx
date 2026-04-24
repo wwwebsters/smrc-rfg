@@ -125,10 +125,10 @@ export default function RunnerDetailPage({
         {runner.attendance_runner_id && (
           <Link
             href={`/attendance/runners/${runner.attendance_runner_id}`}
-            className="inline-flex items-center gap-1 mt-2 text-sm font-medium hover:underline"
-            style={{ color: 'var(--accent-blue)' }}
+            className="inline-block mt-2 text-sm px-3 py-1 rounded-full"
+            style={{ background: 'rgba(0,115,234,0.1)', color: 'var(--accent-blue)' }}
           >
-            View Attendance Profile <span>&rarr;</span>
+            View Attendance Profile →
           </Link>
         )}
       </div>

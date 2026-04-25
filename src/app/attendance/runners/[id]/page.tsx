@@ -118,11 +118,12 @@ export default function AttendanceRunnerDetailPage({
               {historyByYear[year]?.map((record) => (
                 <div
                   key={record.week_date}
-                  className="w-10 h-10 flex items-center justify-center rounded-lg text-xs font-medium"
+                  className="px-2 py-1.5 flex items-center justify-center rounded-lg text-xs font-medium whitespace-nowrap"
                   style={{
                     background: record.present ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.1)',
                     color: record.present ? '#22c55e' : '#ef4444',
                     border: `1px solid ${record.present ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.2)'}`,
+                    minWidth: '52px',
                   }}
                   title={`Week ${record.week_number}: ${record.week_date}`}
                 >

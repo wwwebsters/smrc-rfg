@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SMRC",
-  description: "South Mason Running Club",
+  description: "Saturday Morning Running Club",
 };
 
 export default function RootLayout({

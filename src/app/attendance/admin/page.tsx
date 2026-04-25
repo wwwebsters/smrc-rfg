@@ -29,7 +29,9 @@ function formatDate(dateStr: string): string {
 }
 
 function formatShortDate(dateStr: string): string {
-  const date = new Date(dateStr);
+  // Parse as local date to avoid timezone issues
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
@@ -51,7 +53,7 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function RSVPQueue({ rsvps, onAction }: { rsvps: RSVP[]; onAction: (action: string, ids: number[]) => void }) {
+function RSVPQueue({ rsvps, onAction, onClearWeek }: { rsvps: RSVP[]; onAction: (action: string, ids: number[]) => void; onClearWeek: (weekDate: string) => void }) {
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
   if (rsvps.length === 0) return null;
@@ -115,12 +117,24 @@ function RSVPQueue({ rsvps, onAction }: { rsvps: RSVP[]; onAction: (action: stri
             style={{ background: 'var(--nav-bg)', color: 'white' }}
           >
             <span className="font-semibold">{formatShortDate(weekDate)}</span>
-            <button
-              onClick={() => selectAll(weekRsvps.filter((r) => r.status === 'in').map((r) => r.id))}
-              className="text-xs underline"
-            >
-              Select all IN
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => selectAll(weekRsvps.filter((r) => r.status === 'in').map((r) => r.id))}
+                className="text-xs underline"
+              >
+                Select all IN
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm(`Clear all RSVPs for ${formatShortDate(weekDate)}?`)) {
+                    onClearWeek(weekDate);
+                  }
+                }}
+                className="text-xs underline text-red-300"
+              >
+                Clear Week
+              </button>
+            </div>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--card-border)' }}>
             {weekRsvps.map((rsvp) => (
@@ -185,6 +199,15 @@ export default function AttendanceAdminPage() {
     fetchData();
   };
 
+  const handleClearWeek = async (weekDate: string) => {
+    await fetch('/api/attendance/rsvp-queue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'clear_week', weekDate }),
+    });
+    fetchData();
+  };
+
   if (loading) {
     return (
       <AdminAuthProvider>
@@ -207,7 +230,7 @@ export default function AttendanceAdminPage() {
           </div>
         </div>
 
-        <RSVPQueue rsvps={rsvps} onAction={handleRSVPAction} />
+        <RSVPQueue rsvps={rsvps} onAction={handleRSVPAction} onClearWeek={handleClearWeek} />
 
         <div className="card overflow-hidden">
           <table className="min-w-full text-sm">

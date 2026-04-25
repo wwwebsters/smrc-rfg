@@ -27,7 +27,9 @@ interface WeekData {
 }
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
+  // Parse as local date to avoid timezone issues (UTC conversion shifts to previous day)
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 }
 
@@ -87,7 +89,7 @@ export default function EditAttendanceWeekPage({
 
   if (loading || !data) {
     return (
-      <AdminAuthProvider>
+      <AdminAuthProvider type="attendance">
         <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>Loading week...</div>
       </AdminAuthProvider>
     );
@@ -96,7 +98,7 @@ export default function EditAttendanceWeekPage({
   const presentCount = Array.from(records.values()).filter(Boolean).length;
 
   return (
-    <AdminAuthProvider>
+    <AdminAuthProvider type="attendance">
       <div>
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>

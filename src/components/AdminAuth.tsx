@@ -35,12 +35,12 @@ export function AdminAuthProvider({ children, type = 'rfg' }: { children: React.
   }, []);
 
   useEffect(() => {
-    // Use different endpoints to check auth based on type
+    // Use simple auth-check endpoints for both types
     const checkEndpoint = type === 'attendance'
-      ? '/api/attendance/auth-check'  // Simple auth check endpoint for attendance
-      : '/api/admin/review';           // This endpoint requires RFG admin auth
+      ? '/api/attendance/auth-check'
+      : '/api/rfg/auth-check';
 
-    fetch(checkEndpoint, { method: type === 'attendance' ? 'GET' : 'POST', headers: { 'Content-Type': 'application/json' }, body: type === 'attendance' ? undefined : '{}' })
+    fetch(checkEndpoint)
       .then((r) => {
         if (r.status === 401) {
           setAuthed(false);

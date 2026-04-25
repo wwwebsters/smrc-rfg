@@ -28,7 +28,7 @@ export function middleware(request: NextRequest) {
   const isAttendanceAdmin = pathname.startsWith('/attendance/admin');
   const isRfgAdmin = pathname.startsWith('/rfg/admin');
   const isAttendanceAdminApi = pathname.startsWith('/api/attendance/rsvp-queue') || pathname.startsWith('/api/attendance/weeks') || pathname.startsWith('/api/attendance/auth-check');
-  const isRfgAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
+  const isRfgAdminApi = (pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth') || pathname.startsWith('/api/rfg/auth-check');
 
   // Attendance admin pages and APIs (only /attendance/admin, not all attendance pages)
   if (isAttendanceAdmin || isAttendanceAdminApi) {

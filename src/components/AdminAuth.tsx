@@ -37,17 +37,24 @@ export function AdminAuthProvider({ children, type = 'rfg' }: { children: React.
   useEffect(() => {
     // Use different endpoints to check auth based on type
     const checkEndpoint = type === 'attendance'
-      ? '/api/attendance/rsvp-queue'  // This endpoint requires attendance admin auth
+      ? '/api/attendance/auth-check'  // Simple auth check endpoint for attendance
       : '/api/admin/review';           // This endpoint requires RFG admin auth
 
     fetch(checkEndpoint, { method: type === 'attendance' ? 'GET' : 'POST', headers: { 'Content-Type': 'application/json' }, body: type === 'attendance' ? undefined : '{}' })
       .then((r) => {
         if (r.status === 401) {
           setAuthed(false);
-        } else {
+        } else if (r.ok) {
           setAuthed(true);
           if (type === 'rfg') refreshRunners();
+        } else {
+          // Non-401 error - show login form as fallback
+          setAuthed(false);
         }
+      })
+      .catch(() => {
+        // Network error - show login form as fallback
+        setAuthed(false);
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);

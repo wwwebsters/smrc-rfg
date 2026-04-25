@@ -27,7 +27,7 @@ export function middleware(request: NextRequest) {
   // Different admin areas have separate passwords
   const isAttendanceAdmin = pathname.startsWith('/attendance/admin');
   const isRfgAdmin = pathname.startsWith('/rfg/admin');
-  const isAttendanceAdminApi = pathname.startsWith('/api/attendance/rsvp-queue') || pathname.startsWith('/api/attendance/weeks');
+  const isAttendanceAdminApi = pathname.startsWith('/api/attendance/rsvp-queue') || pathname.startsWith('/api/attendance/weeks') || pathname.startsWith('/api/attendance/auth-check');
   const isRfgAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
   // Attendance admin pages and APIs (only /attendance/admin, not all attendance pages)

@@ -212,14 +212,14 @@ export default function AttendanceAdminPage() {
 
   if (loading) {
     return (
-      <AdminAuthProvider>
+      <AdminAuthProvider type="attendance">
         <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>Loading...</div>
       </AdminAuthProvider>
     );
   }
 
   return (
-    <AdminAuthProvider>
+    <AdminAuthProvider type="attendance">
       <div>
         <div className="mb-6 flex justify-between items-center">
           <div>

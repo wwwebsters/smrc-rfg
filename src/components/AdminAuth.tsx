@@ -18,7 +18,7 @@ export function useAdminAuth() {
   return useContext(AdminAuthContext);
 }
 
-export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
+export function AdminAuthProvider({ children, type = 'rfg' }: { children: React.ReactNode; type?: 'attendance' | 'rfg' }) {
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -59,7 +59,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         const res = await fetch('/api/admin/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password }),
+          body: JSON.stringify({ password, type }),
         });
         if (res.ok) {
           window.location.reload();

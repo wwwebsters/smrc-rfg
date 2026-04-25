@@ -24,15 +24,34 @@ export function middleware(request: NextRequest) {
   }
 
   // Admin pages and admin APIs require additional admin auth
-  // Also require admin auth for main attendance pages while we work through issues
-  const isAdminPage = pathname.startsWith('/rfg/admin') || pathname.startsWith('/attendance');
-  const isAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
+  // Different admin areas have separate passwords
+  const isAttendanceAdmin = pathname.startsWith('/attendance/admin');
+  const isAttendancePage = pathname.startsWith('/attendance');
+  const isRfgAdmin = pathname.startsWith('/rfg/admin');
+  const isAttendanceApi = pathname.startsWith('/api/attendance');
+  const isRfgAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
-  if (isAdminPage || isAdminApi) {
-    const adminCookie = request.cookies.get('admin-auth');
+  // Attendance admin pages and APIs
+  if (isAttendanceAdmin || isAttendancePage || isAttendanceApi) {
+    const adminCookie = request.cookies.get('admin-auth-attendance');
     if (adminCookie?.value !== 'authenticated') {
-      if (isAdminApi) {
-        return new NextResponse(JSON.stringify({ error: 'Admin authentication required' }), {
+      if (isAttendanceApi) {
+        return new NextResponse(JSON.stringify({ error: 'Attendance admin authentication required' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      // For admin pages, let through — the layout handles the login prompt
+      return NextResponse.next();
+    }
+  }
+
+  // RFG admin pages and APIs
+  if (isRfgAdmin || isRfgAdminApi) {
+    const adminCookie = request.cookies.get('admin-auth-rfg');
+    if (adminCookie?.value !== 'authenticated') {
+      if (isRfgAdminApi) {
+        return new NextResponse(JSON.stringify({ error: 'RFG admin authentication required' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json' },
         });

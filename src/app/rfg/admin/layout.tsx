@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const activeLabel = adminLinks.find((l) => l.href === pathname)?.label || 'Admin';
 
   return (
-    <AdminAuthProvider>
+    <AdminAuthProvider type="rfg">
       <div>
         {/* Mobile sub-nav */}
         <div className="md:hidden mb-4">

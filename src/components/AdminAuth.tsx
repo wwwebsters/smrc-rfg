@@ -35,17 +35,22 @@ export function AdminAuthProvider({ children, type = 'rfg' }: { children: React.
   }, []);
 
   useEffect(() => {
-    fetch('/api/admin/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+    // Use different endpoints to check auth based on type
+    const checkEndpoint = type === 'attendance'
+      ? '/api/attendance/rsvp-queue'  // This endpoint requires attendance admin auth
+      : '/api/admin/review';           // This endpoint requires RFG admin auth
+
+    fetch(checkEndpoint, { method: type === 'attendance' ? 'GET' : 'POST', headers: { 'Content-Type': 'application/json' }, body: type === 'attendance' ? undefined : '{}' })
       .then((r) => {
         if (r.status === 401) {
           setAuthed(false);
         } else {
           setAuthed(true);
-          refreshRunners();
+          if (type === 'rfg') refreshRunners();
         }
       });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [type]);
 
   if (authed === null) {
     return <div className="text-center py-12" style={{ color: 'var(--text-muted)' }}>Loading...</div>;

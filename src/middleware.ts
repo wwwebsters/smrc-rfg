@@ -26,16 +26,15 @@ export function middleware(request: NextRequest) {
   // Admin pages and admin APIs require additional admin auth
   // Different admin areas have separate passwords
   const isAttendanceAdmin = pathname.startsWith('/attendance/admin');
-  const isAttendancePage = pathname.startsWith('/attendance');
   const isRfgAdmin = pathname.startsWith('/rfg/admin');
-  const isAttendanceApi = pathname.startsWith('/api/attendance');
+  const isAttendanceAdminApi = pathname.startsWith('/api/attendance/rsvp-queue') || pathname.startsWith('/api/attendance/weeks');
   const isRfgAdminApi = pathname.startsWith('/api/admin') && pathname !== '/api/admin/auth';
 
-  // Attendance admin pages and APIs
-  if (isAttendanceAdmin || isAttendancePage || isAttendanceApi) {
+  // Attendance admin pages and APIs (only /attendance/admin, not all attendance pages)
+  if (isAttendanceAdmin || isAttendanceAdminApi) {
     const adminCookie = request.cookies.get('admin-auth-attendance');
     if (adminCookie?.value !== 'authenticated') {
-      if (isAttendanceApi) {
+      if (isAttendanceAdminApi) {
         return new NextResponse(JSON.stringify({ error: 'Attendance admin authentication required' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json' },

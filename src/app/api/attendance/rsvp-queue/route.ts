@@ -88,9 +88,9 @@ export async function POST(request: Request) {
           });
         }
 
-        // Mark RSVP as approved
+        // Delete the processed RSVP
         await db.execute({
-          sql: 'UPDATE attendance_rsvp_queue SET approved = 1 WHERE id = ?',
+          sql: 'DELETE FROM attendance_rsvp_queue WHERE id = ?',
           args: [id]
         });
       }
@@ -99,14 +99,23 @@ export async function POST(request: Request) {
     }
 
     if (action === 'dismiss') {
-      // Just mark as approved without creating attendance
+      // Delete dismissed RSVPs without creating attendance
       for (const id of rsvpIds) {
         await db.execute({
-          sql: 'UPDATE attendance_rsvp_queue SET approved = 1 WHERE id = ?',
+          sql: 'DELETE FROM attendance_rsvp_queue WHERE id = ?',
           args: [id]
         });
       }
       return NextResponse.json({ success: true, dismissed: rsvpIds.length });
+    }
+
+    if (action === 'clear_week') {
+      // Clear all RSVPs for a specific week
+      await db.execute({
+        sql: 'DELETE FROM attendance_rsvp_queue WHERE week_date = ?',
+        args: [weekDate]
+      });
+      return NextResponse.json({ success: true, cleared: weekDate });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

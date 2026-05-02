@@ -36,6 +36,9 @@ export async function POST(request: Request) {
     const { action, rsvpIds, weekDate } = await request.json();
 
     if (action === 'approve') {
+      // First, collect the week dates from RSVPs we're about to process
+      const weekDates = new Set<string>();
+
       // Approve selected RSVPs and create attendance records
       for (const id of rsvpIds) {
         // Get the RSVP
@@ -47,6 +50,7 @@ export async function POST(request: Request) {
         if (rsvp.rows.length === 0) continue;
 
         const r = rsvp.rows[0];
+        weekDates.add(r.week_date as string);
 
         // Find or create the week
         let week = await db.execute({
@@ -95,7 +99,16 @@ export async function POST(request: Request) {
         });
       }
 
-      return NextResponse.json({ success: true, approved: rsvpIds.length });
+      // Clear any remaining RSVPs for all weeks that were approved
+      // This ensures the queue is clean for the next week
+      for (const wd of weekDates) {
+        await db.execute({
+          sql: 'DELETE FROM attendance_rsvp_queue WHERE week_date = ?',
+          args: [wd]
+        });
+      }
+
+      return NextResponse.json({ success: true, approved: rsvpIds.length, clearedWeeks: Array.from(weekDates) });
     }
 
     if (action === 'dismiss') {

@@ -197,6 +197,7 @@ export async function POST(request: Request) {
         args: [finishTime, submission.race_date, currentAge, factorAtRace, runner.id, distKey],
       });
     } else if (!pr) {
+      // No PR record exists - create one
       const finishTime = submission.finish_time_seconds;
       const factorAtRaceNew = currentFactor;
       const newAgTime = factorAtRaceNew ? finishTime * factorAtRaceNew : null;
@@ -207,6 +208,20 @@ export async function POST(request: Request) {
                                       age_at_ag_pr, factor_at_race, ag_time_seconds, todays_factor, target_seconds)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         args: [runner.id, distKey, finishTime, finishTime, submission.race_date, currentAge, factorAtRaceNew, newAgTime, todaysFactor, newTarget],
+      });
+    } else if (isFirstTimeDistance && pr) {
+      // PR record exists but has null times - this is a first-time distance, update the existing record
+      const finishTime = submission.finish_time_seconds;
+      const factorAtRace = currentFactor;
+      const newAgTime = factorAtRace ? finishTime * factorAtRace : null;
+      const newTarget = (newAgTime && todaysFactor) ? newAgTime / todaysFactor : null;
+
+      statements.push({
+        sql: `UPDATE runner_prs
+              SET pr_time_seconds = ?, ag_pr_time_seconds = ?, ag_pr_date = ?,
+                  age_at_ag_pr = ?, factor_at_race = ?, ag_time_seconds = ?, target_seconds = ?
+              WHERE runner_id = ? AND distance = ?`,
+        args: [finishTime, finishTime, submission.race_date, currentAge, factorAtRace, newAgTime, newTarget, runner.id, distKey],
       });
     }
 

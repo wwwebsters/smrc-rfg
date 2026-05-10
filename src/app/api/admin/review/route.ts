@@ -112,11 +112,17 @@ export async function POST(request: Request) {
     let pointsEarned: number;
     let pointsType: string;
 
+    // "Participation" distance is always 1 point, no PR/AG tracking
+    const isParticipationOnly = submission.distance === 'Participation';
+
     const isFirstTimeDistance = !pr || (!pr.pr_time_seconds && !pr.ag_pr_time_seconds);
     const isPR = pr?.pr_time_seconds && submission.finish_time_seconds < pr.pr_time_seconds;
     const isAGPR = pr?.target_seconds && submission.finish_time_seconds < pr.target_seconds;
 
-    if (isPR && distIdx >= 0) {
+    if (isParticipationOnly) {
+      pointsEarned = 1;
+      pointsType = 'PARTICIPATION';
+    } else if (isPR && distIdx >= 0) {
       pointsEarned = PR_POINTS[distIdx];
       pointsType = 'PR';
     } else if ((isAGPR || isFirstTimeDistance) && distIdx >= 0) {
@@ -172,7 +178,10 @@ export async function POST(request: Request) {
 
     const todaysFactor = pr?.todays_factor ?? currentFactor;
 
-    if (isPR) {
+    // Skip PR tracking for "Participation" distance
+    if (isParticipationOnly) {
+      // No PR updates for participation-only races
+    } else if (isPR) {
       // Actual PR — update pr_time and AG PR fields, but NOT ag_time or target
       // ag_time and target are anchored to the original best age-graded performance
       // from the spreadsheet and only change when the runner's age changes

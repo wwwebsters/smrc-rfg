@@ -11,7 +11,11 @@ interface Runner {
 const DISTANCES = [
   '5k', '4 mile', '5 mile', '10k', '8 mile', '15k',
   '10 mile', 'Half Marathon', 'Full Marathon',
-  '50k', '50 Mile', '100 Mile', 'Participation',
+  '50k', '50 Mile', '100 Mile',
+  'Participation up to 5 miles',
+  'Participation 5.01 - 8 miles',
+  'Participation 8.01 - 13 miles',
+  'Participation 13.01 miles to infinity',
 ];
 
 export default function SubmitRacePage() {

@@ -112,15 +112,21 @@ export async function POST(request: Request) {
     let pointsEarned: number;
     let pointsType: string;
 
-    // "Participation" distance is always 1 point, no PR/AG tracking
-    const isParticipationOnly = submission.distance === 'Participation';
+    // Participation categories - fixed points based on distance range, no PR/AG tracking
+    const participationPoints: Record<string, number> = {
+      'Participation up to 5 miles': 1,
+      'Participation 5.01 - 8 miles': 2,
+      'Participation 8.01 - 13 miles': 3,
+      'Participation 13.01 miles to infinity': 4,
+    };
+    const isParticipationOnly = submission.distance in participationPoints;
 
     const isFirstTimeDistance = !pr || (!pr.pr_time_seconds && !pr.ag_pr_time_seconds);
     const isPR = pr?.pr_time_seconds && submission.finish_time_seconds < pr.pr_time_seconds;
     const isAGPR = pr?.target_seconds && submission.finish_time_seconds < pr.target_seconds;
 
     if (isParticipationOnly) {
-      pointsEarned = 1;
+      pointsEarned = participationPoints[submission.distance];
       pointsType = 'PARTICIPATION';
     } else if (isPR && distIdx >= 0) {
       pointsEarned = PR_POINTS[distIdx];

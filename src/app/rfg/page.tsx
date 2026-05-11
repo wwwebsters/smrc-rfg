@@ -167,7 +167,7 @@ export default function LeaderboardPage() {
           color="gray"
           rows={[
             ['Up to 5 mile', '1 pt'], ['Up to 8 mile', '2 pts'],
-            ['Up to Half Marathon', '3 pts'], ['Marathon & beyond', '4 pts'],
+            ['Up to Half Marathon', '3 pts'], ['Longer than a Half and beyond', '4 pts'],
           ]}
         />
       </div>

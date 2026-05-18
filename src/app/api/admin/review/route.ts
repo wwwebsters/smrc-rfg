@@ -116,8 +116,8 @@ export async function POST(request: Request) {
     const participationPoints: Record<string, number> = {
       'Participation up to 5 miles': 1,
       'Participation 5.01 - 8 miles': 2,
-      'Participation 8.01 - 13 miles': 3,
-      'Participation 13.01 miles to infinity': 4,
+      'Participation 8.01 - 26.1 miles': 3,
+      'Participation 26.3+ miles': 4,
     };
     const isParticipationOnly = submission.distance in participationPoints;
 

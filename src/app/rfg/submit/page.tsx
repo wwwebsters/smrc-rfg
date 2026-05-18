@@ -14,8 +14,8 @@ const DISTANCES = [
   '50k', '50 Mile', '100 Mile',
   'Participation up to 5 miles',
   'Participation 5.01 - 8 miles',
-  'Participation 8.01 - 13 miles',
-  'Participation 13.01 miles to infinity',
+  'Participation 8.01 - 26.1 miles',
+  'Participation 26.3+ miles',
 ];
 
 export default function SubmitRacePage() {

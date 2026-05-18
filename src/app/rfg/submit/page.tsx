@@ -12,10 +12,10 @@ const DISTANCES = [
   '5k', '4 mile', '5 mile', '10k', '8 mile', '15k',
   '10 mile', 'Half Marathon', 'Full Marathon',
   '50k', '50 Mile', '100 Mile',
-  'Participation up to 5 miles',
-  'Participation 5.01 - 8 miles',
-  'Participation 8.01 - 26.1 miles',
-  'Participation 26.3+ miles',
+  'Participation up to 5 miles (1 pt)',
+  'Participation 5.01 - 8 miles (2 pts)',
+  'Participation 8.01 - 26.1 miles (3 pts)',
+  'Participation 26.3+ miles (4 pts)',
 ];
 
 export default function SubmitRacePage() {

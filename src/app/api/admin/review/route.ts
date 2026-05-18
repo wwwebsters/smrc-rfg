@@ -114,10 +114,10 @@ export async function POST(request: Request) {
 
     // Participation categories - fixed points based on distance range, no PR/AG tracking
     const participationPoints: Record<string, number> = {
-      'Participation up to 5 miles': 1,
-      'Participation 5.01 - 8 miles': 2,
-      'Participation 8.01 - 26.1 miles': 3,
-      'Participation 26.3+ miles': 4,
+      'Participation up to 5 miles (1 pt)': 1,
+      'Participation 5.01 - 8 miles (2 pts)': 2,
+      'Participation 8.01 - 26.1 miles (3 pts)': 3,
+      'Participation 26.3+ miles (4 pts)': 4,
     };
     const isParticipationOnly = submission.distance in participationPoints;
 

@@ -70,6 +70,7 @@ export async function GET() {
       leaderboard,
       totalWeeks: totalWeeks2026,
       year: 2026,
+      yoyWeeks: totalWeeks2026,
     });
   } catch (error) {
     console.error('Attendance leaderboard error:', error);

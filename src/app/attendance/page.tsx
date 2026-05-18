@@ -20,6 +20,7 @@ interface LeaderboardData {
   leaderboard: LeaderboardEntry[];
   totalWeeks: number;
   year: number;
+  yoyWeeks: number;
 }
 
 function RankBadge({ rank }: { rank: number }) {
@@ -142,7 +143,7 @@ export default function AttendanceLeaderboardPage() {
               <th className="px-3 py-3 text-center font-semibold text-white">2026</th>
               <th className="px-3 py-3 text-center font-semibold text-white">%</th>
               <th className="px-3 py-3 text-center font-semibold text-white">Streak</th>
-              <th className="px-3 py-3 text-center font-semibold text-white" title="Same number of weeks as current year">&#39;25 (wk 1-19)</th>
+              <th className="px-3 py-3 text-center font-semibold text-white" title="Same number of weeks as current year">&apos;25 (wk 1-{data.yoyWeeks})</th>
               <th className="px-3 py-3 text-center font-semibold text-white">YoY</th>
               <th className="px-3 py-3 text-center font-semibold text-white" title="Full year">&#39;24</th>
               <th className="px-3 py-3 text-center font-semibold text-white" title="Full year">&#39;23</th>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyCookieEdge } from '@/lib/cookie-verify-edge';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow the login page and auth APIs through (no auth required)
@@ -14,9 +15,10 @@ export function middleware(request: NextRequest) {
 
   // Protect landing page, /rfg, /attendance and /api routes with site auth
   if (pathname === '/' || pathname.startsWith('/rfg') || pathname.startsWith('/attendance') || pathname.startsWith('/api')) {
-    // Check for site auth cookie
+    // Check for site auth cookie with signature verification
     const authCookie = request.cookies.get('site-auth');
-    if (authCookie?.value !== 'authenticated') {
+    const verifiedValue = authCookie?.value ? await verifyCookieEdge(authCookie.value) : null;
+    if (verifiedValue !== 'authenticated') {
       return NextResponse.redirect(new URL('/rfg/login', request.url));
     }
   } else {
@@ -33,7 +35,8 @@ export function middleware(request: NextRequest) {
   // Attendance admin pages and APIs (only /attendance/admin, not all attendance pages)
   if (isAttendanceAdmin || isAttendanceAdminApi) {
     const adminCookie = request.cookies.get('admin-auth-attendance');
-    if (adminCookie?.value !== 'authenticated') {
+    const verifiedAdmin = adminCookie?.value ? await verifyCookieEdge(adminCookie.value) : null;
+    if (verifiedAdmin !== 'authenticated') {
       if (isAttendanceAdminApi) {
         return new NextResponse(JSON.stringify({ error: 'Attendance admin authentication required' }), {
           status: 401,
@@ -48,7 +51,8 @@ export function middleware(request: NextRequest) {
   // RFG admin pages and APIs
   if (isRfgAdmin || isRfgAdminApi) {
     const adminCookie = request.cookies.get('admin-auth-rfg');
-    if (adminCookie?.value !== 'authenticated') {
+    const verifiedRfgAdmin = adminCookie?.value ? await verifyCookieEdge(adminCookie.value) : null;
+    if (verifiedRfgAdmin !== 'authenticated') {
       if (isRfgAdminApi) {
         return new NextResponse(JSON.stringify({ error: 'RFG admin authentication required' }), {
           status: 401,

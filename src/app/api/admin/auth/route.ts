@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { signCookie } from '@/lib/cookie-signing';
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
   }
 
   const response = NextResponse.json({ success: true });
-  response.cookies.set(cookieName, 'authenticated', {
+  response.cookies.set(cookieName, signCookie('authenticated'), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

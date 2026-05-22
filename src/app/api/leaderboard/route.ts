@@ -49,9 +49,28 @@ export async function GET() {
       })
     );
 
-    leaderboard.sort((a, b) => b.total_points - a.total_points);
+    // Sort by points, then efficiency as secondary tiebreaker for display order
+    leaderboard.sort((a, b) => {
+      if (b.total_points !== a.total_points) return b.total_points - a.total_points;
+      return b.efficiency - a.efficiency;
+    });
 
-    return NextResponse.json(leaderboard);
+    // Assign ranks - tied runners get the same rank, next rank skips
+    let currentRank = 1;
+    const rankedLeaderboard = leaderboard.map((entry, idx) => {
+      if (idx > 0) {
+        const prev = leaderboard[idx - 1];
+        // Tie if same points AND same efficiency
+        if (entry.total_points === prev.total_points && entry.efficiency === prev.efficiency) {
+          // Keep same rank as previous
+        } else {
+          currentRank = idx + 1;
+        }
+      }
+      return { ...entry, rank: currentRank };
+    });
+
+    return NextResponse.json(rankedLeaderboard);
   } catch (error) {
     console.error('Leaderboard error:', error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });

@@ -11,6 +11,7 @@ interface LeaderboardEntry {
   race_count: number;
   efficiency: number;
   race_scores: { race_number: number; points_earned: number }[];
+  rank: number;
 }
 
 function displayName(full_name: string, nickname: string) {
@@ -56,12 +57,12 @@ export default function LeaderboardPage() {
             href={`/rfg/runners/${entry.runner_id}`}
             className={`block card p-3 ${idx < 3 ? 'border-l-4' : ''}`}
             style={{
-              borderLeftColor: idx === 0 ? 'var(--accent-gold)' : idx === 1 ? '#C5C7D0' : idx === 2 ? '#CD7F32' : undefined,
+              borderLeftColor: entry.rank === 1 ? 'var(--accent-gold)' : entry.rank === 2 ? '#C5C7D0' : entry.rank === 3 ? '#CD7F32' : undefined,
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <RankBadge rank={idx + 1} />
+                <RankBadge rank={entry.rank} />
                 <div>
                   <div className="font-medium text-sm" style={{ color: 'var(--accent-blue)' }}>
                     {displayName(entry.full_name, entry.nickname)}
@@ -108,7 +109,7 @@ export default function LeaderboardPage() {
                 style={{ borderBottom: '1px solid var(--card-border)' }}
               >
                 <td className="px-3 py-2.5 sticky left-0 bg-white z-10">
-                  <RankBadge rank={idx + 1} />
+                  <RankBadge rank={entry.rank} />
                 </td>
                 <td className="px-3 py-2.5 font-medium sticky left-12 bg-white z-10">
                   <Link

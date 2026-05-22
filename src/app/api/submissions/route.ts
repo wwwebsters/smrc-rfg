@@ -63,6 +63,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate finish time is positive (participation categories can have 0, but that's handled by frontend)
+    if (typeof finishTime !== 'number' || finishTime < 0) {
+      return NextResponse.json(
+        { error: 'Finish time must be a non-negative number' },
+        { status: 400 }
+      );
+    }
+
     const today = new Date().toISOString().split('T')[0];
     if (raceDate > today) {
       return NextResponse.json(

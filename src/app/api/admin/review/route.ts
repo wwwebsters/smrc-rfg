@@ -222,7 +222,7 @@ export async function POST(request: Request) {
         sql: `INSERT INTO runner_prs (runner_id, distance, pr_time_seconds, ag_pr_time_seconds, ag_pr_date,
                                       age_at_ag_pr, factor_at_race, ag_time_seconds, todays_factor, target_seconds)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        args: [runner.id, distKey, finishTime, finishTime, submission.race_date, currentAge, factorAtRaceNew, newAgTime, todaysFactor, newTarget],
+        args: [runner.id, distKey, finishTime, newAgTime, submission.race_date, currentAge, factorAtRaceNew, newAgTime, todaysFactor, newTarget],
       });
     } else if (isFirstTimeDistance && pr) {
       // PR record exists but has null times - this is a first-time distance, update the existing record
@@ -236,7 +236,7 @@ export async function POST(request: Request) {
               SET pr_time_seconds = ?, ag_pr_time_seconds = ?, ag_pr_date = ?,
                   age_at_ag_pr = ?, factor_at_race = ?, ag_time_seconds = ?, target_seconds = ?
               WHERE runner_id = ? AND distance = ?`,
-        args: [finishTime, finishTime, submission.race_date, currentAge, factorAtRace, newAgTime, newTarget, runner.id, distKey],
+        args: [finishTime, newAgTime, submission.race_date, currentAge, factorAtRace, newAgTime, newTarget, runner.id, distKey],
       });
     }
 

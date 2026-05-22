@@ -49,20 +49,25 @@ export async function GET() {
       })
     );
 
-    // Sort by points, then efficiency as secondary tiebreaker for display order
+    // Sort by points, then race count (more races = higher rank), then efficiency
     leaderboard.sort((a, b) => {
       if (b.total_points !== a.total_points) return b.total_points - a.total_points;
+      if (b.race_count !== a.race_count) return b.race_count - a.race_count;
       return b.efficiency - a.efficiency;
     });
 
     // Assign ranks - tied runners get the same rank, next rank skips
+    // Tie only if points, race count, AND efficiency are all equal
     let currentRank = 1;
     const rankedLeaderboard = leaderboard.map((entry, idx) => {
       if (idx > 0) {
         const prev = leaderboard[idx - 1];
-        // Tie if same points AND same efficiency
-        if (entry.total_points === prev.total_points && entry.efficiency === prev.efficiency) {
-          // Keep same rank as previous
+        if (
+          entry.total_points === prev.total_points &&
+          entry.race_count === prev.race_count &&
+          entry.efficiency === prev.efficiency
+        ) {
+          // Keep same rank as previous (true tie)
         } else {
           currentRank = idx + 1;
         }

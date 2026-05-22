@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rateCheck = checkRateLimit(ip);
+
+  if (!rateCheck.allowed) {
+    const minutes = Math.ceil(rateCheck.resetIn / 60000);
+    return NextResponse.json(
+      { error: `Too many attempts. Try again in ${minutes} minutes.` },
+      { status: 429 }
+    );
+  }
+
   const { password, type } = await request.json();
 
   // Determine which password to check based on type
@@ -20,7 +32,10 @@ export async function POST(request: Request) {
   }
 
   if (!adminPassword || password !== adminPassword) {
-    return NextResponse.json({ error: 'Wrong password' }, { status: 401 });
+    return NextResponse.json(
+      { error: `Wrong password. ${rateCheck.remaining} attempts remaining.` },
+      { status: 401 }
+    );
   }
 
   const response = NextResponse.json({ success: true });

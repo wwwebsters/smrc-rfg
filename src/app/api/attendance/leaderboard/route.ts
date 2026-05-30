@@ -41,10 +41,11 @@ export async function GET() {
       LEFT JOIN attendance_weeks aw ON rec.week_id = aw.id
       GROUP BY ar.id, ar.nickname, ar.full_name
       HAVING total_2026 > 0
-      ORDER BY total_2026 DESC, ar.nickname ASC
+      ORDER BY total_2026 DESC
     `, [totalWeeks2026, totalWeeks2026]);
 
-    // Calculate streaks for each runner
+    // Sort by attendance, then current streak, then nickname for stable ordering
+    // Calculate streaks first so we can use them in sorting
     for (const runner of leaderboard) {
       const streakResult = await dbAll<{ present: number; week_date: string }>(
         `SELECT rec.present, aw.week_date
@@ -66,8 +67,32 @@ export async function GET() {
       runner.current_streak = streak;
     }
 
+    // Sort with tiebreakers: total_2026 DESC, current_streak DESC, nickname ASC
+    leaderboard.sort((a, b) => {
+      if (b.total_2026 !== a.total_2026) return b.total_2026 - a.total_2026;
+      if (b.current_streak !== a.current_streak) return b.current_streak - a.current_streak;
+      return a.nickname.localeCompare(b.nickname);
+    });
+
+    // Assign ranks - tied runners get the same rank only if all tiebreakers match
+    let currentRank = 1;
+    const rankedLeaderboard = leaderboard.map((entry, idx) => {
+      if (idx > 0) {
+        const prev = leaderboard[idx - 1];
+        if (
+          entry.total_2026 === prev.total_2026 &&
+          entry.current_streak === prev.current_streak
+        ) {
+          // Keep same rank (true tie - only nickname differs)
+        } else {
+          currentRank = idx + 1;
+        }
+      }
+      return { ...entry, rank: currentRank };
+    });
+
     return NextResponse.json({
-      leaderboard,
+      leaderboard: rankedLeaderboard,
       totalWeeks: totalWeeks2026,
       year: 2026,
       yoyWeeks: totalWeeks2026,

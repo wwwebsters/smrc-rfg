@@ -14,6 +14,7 @@ interface LeaderboardEntry {
   total_2025: number;
   total_2024: number;
   total_2023: number;
+  rank: number;
 }
 
 interface LeaderboardData {
@@ -100,18 +101,18 @@ export default function AttendanceLeaderboardPage() {
 
       {/* Mobile leaderboard - card layout */}
       <div className="sm:hidden space-y-2">
-        {data.leaderboard.map((entry, idx) => (
+        {data.leaderboard.map((entry) => (
           <Link
             key={entry.runner_id}
             href={`/attendance/runners/${entry.runner_id}`}
-            className={`block card p-3 ${idx < 3 ? 'border-l-4' : ''}`}
+            className={`block card p-3 ${entry.rank <= 3 ? 'border-l-4' : ''}`}
             style={{
-              borderLeftColor: idx === 0 ? 'var(--accent-gold)' : idx === 1 ? '#C5C7D0' : idx === 2 ? '#CD7F32' : undefined,
+              borderLeftColor: entry.rank === 1 ? 'var(--accent-gold)' : entry.rank === 2 ? '#C5C7D0' : entry.rank === 3 ? '#CD7F32' : undefined,
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <RankBadge rank={idx + 1} />
+                <RankBadge rank={entry.rank} />
                 <div>
                   <div className="font-medium text-sm" style={{ color: 'var(--accent-blue)' }}>
                     {entry.nickname}
@@ -150,14 +151,14 @@ export default function AttendanceLeaderboardPage() {
             </tr>
           </thead>
           <tbody>
-            {data.leaderboard.map((entry, idx) => (
+            {data.leaderboard.map((entry) => (
               <tr
                 key={entry.runner_id}
                 className="transition-colors hover:bg-blue-50/40"
                 style={{ borderBottom: '1px solid var(--card-border)' }}
               >
                 <td className="px-3 py-2.5">
-                  <RankBadge rank={idx + 1} />
+                  <RankBadge rank={entry.rank} />
                 </td>
                 <td className="px-3 py-2.5 font-medium">
                   <Link

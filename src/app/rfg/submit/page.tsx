@@ -74,7 +74,7 @@ export default function SubmitRacePage() {
       });
 
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Race submitted successfully! It will appear after admin review.' });
+        setMessage({ type: 'success', text: 'Thanks for submitting your race! A notification has been sent to the site admins for approval.' });
         setForm({ runnerNickname: '', raceName: '', raceDate: '', distance: '', hours: '', minutes: '', seconds: '' });
       } else {
         const data = await res.json();

@@ -6,12 +6,15 @@ export const dynamic = 'force-dynamic';
 
 async function notifyDiscord(runnerNickname: string, raceName: string, raceDate: string, distance: string, finishTime: number) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-  if (!webhookUrl) return;
+  if (!webhookUrl) {
+    console.log('Discord webhook URL not configured');
+    return;
+  }
 
   const time = formatTime(finishTime);
 
   try {
-    await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -30,6 +33,9 @@ async function notifyDiscord(runnerNickname: string, raceName: string, raceDate:
         }],
       }),
     });
+    if (!response.ok) {
+      console.error('Discord webhook failed:', response.status, await response.text());
+    }
   } catch (err) {
     console.error('Discord webhook error:', err);
   }
@@ -85,8 +91,8 @@ export async function POST(request: Request) {
       [runnerNickname, raceName, raceDate, distance, Number(finishTime)]
     );
 
-    // Notify admins via Discord (fire and forget)
-    notifyDiscord(runnerNickname, raceName, raceDate, distance, Number(finishTime));
+    // Notify admins via Discord
+    await notifyDiscord(runnerNickname, raceName, raceDate, distance, Number(finishTime));
 
     return NextResponse.json(
       { id: Number(result.lastInsertRowid), message: 'Submission received and pending review' },

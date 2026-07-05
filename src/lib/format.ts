@@ -1,9 +1,11 @@
 /** Format seconds into H:MM:SS or M:SS display */
 export function formatTime(seconds: number | null | undefined): string {
   if (!seconds || seconds <= 0) return '--';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.round(seconds % 60);
+  // Round total seconds first to avoid :60 display bug
+  const totalSecs = Math.round(seconds);
+  const h = Math.floor(totalSecs / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
   if (h > 0) {
     return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }

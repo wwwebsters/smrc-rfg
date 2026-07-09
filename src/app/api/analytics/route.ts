@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trackPageView, getAnalyticsStats, initAnalyticsTable } from '@/lib/analytics';
 import { cookies } from 'next/headers';
+import { verifyCookie } from '@/lib/cookie-signing';
 
 // POST: Track a page view
 export async function POST(request: NextRequest) {
@@ -43,12 +44,15 @@ export async function POST(request: NextRequest) {
 // GET: Get analytics stats (admin only)
 export async function GET(request: NextRequest) {
   try {
-    // Check admin auth
+    // Check admin auth (cookies are signed)
     const cookieStore = await cookies();
     const rfgAuth = cookieStore.get('admin-auth-rfg')?.value;
     const attendanceAuth = cookieStore.get('admin-auth-attendance')?.value;
 
-    if (rfgAuth !== 'authenticated' && attendanceAuth !== 'authenticated') {
+    const isRfgAuthed = rfgAuth && verifyCookie(rfgAuth) === 'authenticated';
+    const isAttendanceAuthed = attendanceAuth && verifyCookie(attendanceAuth) === 'authenticated';
+
+    if (!isRfgAuthed && !isAttendanceAuthed) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

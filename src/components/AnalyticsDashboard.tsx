@@ -47,8 +47,11 @@ export function AnalyticsDashboard() {
   }
 
   if (error) {
-    // Don't show error prominently, just hide the dashboard
-    return null;
+    return (
+      <div className="bg-gray-800 rounded-lg p-4 mt-6">
+        <div className="text-gray-500 text-sm">Analytics: {error}</div>
+      </div>
+    );
   }
 
   if (!stats) {
@@ -56,7 +59,7 @@ export function AnalyticsDashboard() {
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg p-4 mb-6">
+    <div className="bg-gray-800 rounded-lg p-4 mt-6">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setExpanded(!expanded)}

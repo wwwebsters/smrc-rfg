@@ -47,11 +47,8 @@ export function AnalyticsDashboard() {
   }
 
   if (error) {
-    return (
-      <div className="bg-gray-800 rounded-lg p-4 mb-6">
-        <div className="text-red-400">Error: {error}</div>
-      </div>
-    );
+    // Don't show error prominently, just hide the dashboard
+    return null;
   }
 
   if (!stats) {

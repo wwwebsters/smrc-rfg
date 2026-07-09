@@ -53,12 +53,37 @@ export async function GET(request: NextRequest) {
     }
 
     // Initialize table if needed (idempotent)
-    await initAnalyticsTable();
+    try {
+      await initAnalyticsTable();
+    } catch (initError) {
+      console.error('Failed to init analytics table:', initError);
+      // Return empty stats if table creation fails
+      return NextResponse.json({
+        totalViews: 0,
+        todayViews: 0,
+        weekViews: 0,
+        uniqueVisitors: 0,
+        todayUnique: 0,
+        viewsByPage: [],
+        viewsByDay: [],
+        topReferrers: [],
+      });
+    }
 
     const stats = await getAnalyticsStats();
     return NextResponse.json(stats);
   } catch (error) {
     console.error('Analytics fetch error:', error);
-    return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+    // Return empty stats instead of error
+    return NextResponse.json({
+      totalViews: 0,
+      todayViews: 0,
+      weekViews: 0,
+      uniqueVisitors: 0,
+      todayUnique: 0,
+      viewsByPage: [],
+      viewsByDay: [],
+      topReferrers: [],
+    });
   }
 }

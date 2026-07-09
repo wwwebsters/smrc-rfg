@@ -236,8 +236,6 @@ function AttendanceAdminContent() {
         </div>
       </div>
 
-      <AnalyticsDashboard />
-
       <RSVPQueue rsvps={rsvps} onAction={handleRSVPAction} onClearWeek={handleClearWeek} />
 
       <div className="card overflow-hidden">
@@ -284,6 +282,8 @@ function AttendanceAdminContent() {
           </tbody>
         </table>
       </div>
+
+      <AnalyticsDashboard />
     </div>
   );
 }

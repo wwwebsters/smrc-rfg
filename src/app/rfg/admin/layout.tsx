@@ -80,9 +80,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </div>
 
-        <AnalyticsDashboard />
-
         {children}
+
+        <AnalyticsDashboard />
       </div>
     </AdminAuthProvider>
   );

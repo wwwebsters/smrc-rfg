@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AdminAuthProvider } from '@/components/AdminAuth';
+import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 
 const adminLinks = [
   { href: '/rfg/admin', label: 'Pending Submissions' },
@@ -78,6 +79,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             );
           })}
         </div>
+
+        <AnalyticsDashboard />
 
         {children}
       </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AdminAuthProvider, useAdminAuth } from '@/components/AdminAuth';
+import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 
 interface Week {
   id: number;
@@ -234,6 +235,8 @@ function AttendanceAdminContent() {
           </p>
         </div>
       </div>
+
+      <AnalyticsDashboard />
 
       <RSVPQueue rsvps={rsvps} onAction={handleRSVPAction} onClearWeek={handleClearWeek} />
 

@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/rfg', label: 'Leaderboard' },
   { href: '/rfg/submit', label: 'Submit Race' },
   { href: '/rfg/runners', label: 'Runners' },
+  { href: '/rfg/recaps', label: 'Recaps' },
   { href: '/rfg/hall-of-fame', label: '2025 Results' },
   { href: '/rfg/admin', label: 'Admin' },
 ];

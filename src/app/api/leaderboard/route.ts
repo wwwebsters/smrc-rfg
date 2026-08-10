@@ -21,6 +21,7 @@ export async function GET() {
       FROM runners r
       INNER JOIN race_results rr ON r.id = rr.runner_id
       WHERE rr.status = 'approved'
+        AND (r.hidden IS NULL OR r.hidden = 0)
     `);
 
     const leaderboard = await Promise.all(

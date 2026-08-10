@@ -99,7 +99,7 @@ export async function GET(
               points_earned, points_type, race_number
        FROM race_results
        WHERE runner_id = ? AND status = 'approved'
-       ORDER BY race_number ASC`,
+       ORDER BY race_date ASC`,
       [Number(id)]
     );
 

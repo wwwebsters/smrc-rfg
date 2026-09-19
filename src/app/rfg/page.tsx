@@ -168,7 +168,7 @@ export default function LeaderboardPage() {
           color="gray"
           rows={[
             ['Up to 5 miles', '1 pt'], ['5.01 - 8 miles', '2 pts'],
-            ['8.01 - 26.1 miles', '3 pts'], ['26.3+ miles', '4 pts'],
+            ['8.01 - 26.1 miles', '3 pts'], ['26.2+ miles', '4 pts'],
           ]}
         />
       </div>

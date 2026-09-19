@@ -15,7 +15,7 @@ const DISTANCES = [
   'Participation up to 5 miles (1 pt)',
   'Participation 5.01 - 8 miles (2 pts)',
   'Participation 8.01 - 26.1 miles (3 pts)',
-  'Participation 26.3+ miles (4 pts)',
+  'Participation 26.2+ miles (4 pts)',
 ];
 
 export default function SubmitRacePage() {

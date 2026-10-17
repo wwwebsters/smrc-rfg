@@ -62,9 +62,9 @@ export async function POST(request: Request) {
         if (week.rows.length === 0) {
           // Create the week
           const weekDate = new Date(r.week_date as string);
-          const timmyYear = weekDate.getMonth() === 11 && weekDate.getDate() >= 7
-            ? weekDate.getFullYear() + 1
-            : weekDate.getFullYear();
+          // Timmy year runs Nov-Oct. Nov-Dec = current year, Jan-Oct = previous year
+          const month = weekDate.getMonth(); // 0-indexed: 0=Jan, 10=Nov, 11=Dec
+          const timmyYear = month >= 10 ? weekDate.getFullYear() : weekDate.getFullYear() - 1;
 
           // Get next week number
           const lastWeek = await db.execute({

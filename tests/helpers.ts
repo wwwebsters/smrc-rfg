@@ -28,12 +28,12 @@ export async function loginAdmin() {
   const res = await fetch(`${BASE_URL}/api/admin/auth`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: siteCookie },
-    body: JSON.stringify({ password: ADMIN_PASSWORD }),
+    body: JSON.stringify({ password: ADMIN_PASSWORD, type: 'rfg' }),
   });
   const setCookie = res.headers.get('set-cookie');
   if (setCookie) {
-    const match = setCookie.match(/admin-auth=([^;]+)/);
-    if (match) adminCookie = `admin-auth=${match[1]}`;
+    const match = setCookie.match(/admin-auth-rfg=([^;]+)/);
+    if (match) adminCookie = `admin-auth-rfg=${match[1]}`;
   }
   return res.ok;
 }

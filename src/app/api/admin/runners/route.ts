@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbRun, dbGet, dbAll, getDb } from '@/lib/db';
+import { dbRun, dbGet, dbAll, getDb, dbTransaction } from '@/lib/db';
 import { parseTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
@@ -224,14 +224,16 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Runner not found' }, { status: 404 });
     }
 
+    const newNickname: string = nickname?.trim() || existing.nickname;
+
     // Check nickname uniqueness if changed
-    if (nickname && nickname !== existing.nickname) {
+    if (newNickname !== existing.nickname) {
       const dup = await dbGet<{ id: number }>(
         `SELECT id FROM runners WHERE nickname = ? AND id != ?`,
-        [nickname, id]
+        [newNickname, id]
       );
       if (dup) {
-        return NextResponse.json({ error: `Nickname "${nickname}" is already taken` }, { status: 409 });
+        return NextResponse.json({ error: `Nickname "${newNickname}" is already taken` }, { status: 409 });
       }
     }
 
@@ -246,10 +248,17 @@ export async function PUT(request: Request) {
       }
     }
 
-    await dbRun(
-      `UPDATE runners SET nickname = ?, full_name = ?, birthday = ?, age = ? WHERE id = ?`,
-      [nickname?.trim() || existing.nickname, fullName?.trim(), birthday || null, age, id]
-    );
+    // pending_submissions links to runners by nickname, so a rename must carry over
+    await dbTransaction([
+      {
+        sql: `UPDATE runners SET nickname = ?, full_name = ?, birthday = ?, age = ? WHERE id = ?`,
+        args: [newNickname, fullName?.trim(), birthday || null, age, id],
+      },
+      {
+        sql: `UPDATE pending_submissions SET runner_nickname = ? WHERE runner_nickname = ?`,
+        args: [newNickname, existing.nickname],
+      },
+    ]);
 
     // Update PRs if provided
     if (prs && typeof prs === 'object') {

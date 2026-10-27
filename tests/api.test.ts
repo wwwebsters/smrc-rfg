@@ -381,6 +381,27 @@ describe('Runner Management', () => {
       if (r.nickname === TEST_RUNNER) await deleteResult(r.id);
     }
   });
+
+  it('carries submissions over when a runner is renamed', async () => {
+    const renamed = `${TEST_RUNNER}Renamed`;
+    const sub = await submitRace(TEST_RUNNER, 'Rename Check', '2026-01-11', '5k', 1300);
+    expect(sub.ok).toBe(true);
+
+    const rename = (nickname: string) => api('/api/admin/runners', {
+      method: 'PUT',
+      body: JSON.stringify({ id: testRunnerId, nickname, fullName: TEST_RUNNER_FULL, birthday: TEST_RUNNER_BDAY }),
+    });
+
+    try {
+      expect((await rename(renamed)).ok).toBe(true);
+      const pending = await getPendingSubmissions();
+      const moved = pending.body.find((s: { id: number }) => s.id === sub.body.id);
+      expect(moved.runner_nickname).toBe(renamed);
+    } finally {
+      await rename(TEST_RUNNER);
+      await rejectSubmission(sub.body.id);
+    }
+  });
 });
 
 // ========== LEADERBOARD TESTS ==========
